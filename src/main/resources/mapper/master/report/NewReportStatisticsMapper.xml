@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.report.NewReportStatisticsMapper">
+    <!-- 根据批次ID统计学校总人数 -->
+    <select id="selectSchoolHeadcount" resultType="_int">
+        SELECT count(*) FROM collection_data_standard WHERE batch_id = #{batchId}
+    </select>
+
+    <!-- 根据批次ID各学院学生人数统计 -->
+    <select id="selectEveryCollegeCount" resultType="map">
+        SELECT
+          college_name AS collegeName,
+          count(*) AS collegeCount
+        FROM collection_data_standard
+        WHERE batch_id = #{batchId} GROUP BY college_name
+    </select>
+
+    <!-- 根据批次ID查询生源省份总个数 -->
+    <select id="selectCollegeCount" resultType="_int">
+        SELECT COUNT(DISTINCT birth_province) FROM collection_data_standard WHERE batch_id = #{batchId}
+    </select>
+
+    <!-- 根据批次ID查询各生源省份学生总人数 -->
+    <select id="selectEveryProvinceCount" resultType="map">
+        SELECT
+          birth_province AS provinceName,
+          COUNT(birth_province) AS provinceCount
+        FROM collection_data_standard
+        WHERE batch_id = #{batchId}
+        GROUP BY birth_province ORDER BY provinceCount DESC
+    </select>
+
+    <!-- 根据批次ID新生生源省会与学校省会距离总和 -->
+    <select id="selectDistanceTotalSum" resultType="_int">
+        SELECT
+		  SUM(stu.count * school.distance) AS distance_count
+        FROM
+	      (SELECT
+			a.birth_province AS stu_province,
+			b.province_city AS stu_city,
+			COUNT(*) AS count
+		  FROM collection_data_standard a JOIN province_city b ON a.birth_province = b.province
+		    WHERE a.batch_id = #{batchId} GROUP BY stu_province,stu_city) stu
+	    JOIN
+	      (
+	        SELECT
+                to_province_city,
+                from_province_city,
+				distance
+			FROM
+				province_city_distance
+			WHERE
+                to_province_city = #{provinceCityName} ) school
+	      ON stu.stu_city = school.from_province_city
+    </select>
+
+    <!-- 根据批次ID查询全校男女比例 -->
+    <select id="selectSexRatio" resultType="map">
+        SELECT
+            sex AS sex,
+            IFNULL(COUNT(*),0) AS count
+        FROM collection_data_standard WHERE batch_id = #{batchId} GROUP BY sex
+    </select>
+
+    <!-- 根据批次ID查询男生最多专业Top3及男女人数 -->
+    <select id="selectMajorBoyTop3" resultType="map">
+        SELECT
+            boy.pName AS majorName,
+            IFNULL(boy.boyCount,0) AS boyCount,
+            IFNULL(girl.girlCount,0) AS girlCount
+        FROM
+            (SELECT
+                 profession_name AS pName,
+                 COUNT(*)        AS boyCount
+             FROM
+                 collection_data_standard
+             WHERE
+                 sex = '男' AND batch_id = #{batchId}
+             GROUP BY
+                 profession_name
+             ORDER BY boyCount DESC LIMIT 3) boy
+        LEFT JOIN
+            (SELECT
+                 profession_name AS pName,
+                 COUNT(*)        AS girlCount
+             FROM
+                 collection_data_standard
+             WHERE
+                 sex = '女' AND batch_id = #{batchId}
+             GROUP BY profession_name) girl
+         ON boy.pName = girl.pName
+    </select>
+
+    <!-- 根据批次ID查询女生最多专业Top3及男女人数 -->
+    <select id="selectMajorGirlTop3" resultType="map">
+        SELECT
+            girl.pName AS majorName,
+            IFNULL(boy.boyCount,0) AS boyCount,
+            IFNULL(girl.girlCount,0) AS girlCount
+        FROM
+            (SELECT
+                 profession_name AS pName,
+                 COUNT(*)        AS girlCount
+             FROM
+                 collection_data_standard
+             WHERE
+                 sex = '女' AND batch_id = #{batchId}
+             GROUP BY
+                 profession_name
+             ORDER BY girlCount DESC LIMIT 3) girl
+        LEFT JOIN
+            (SELECT
+                 profession_name AS pName,
+                 COUNT(*)        AS boyCount
+             FROM
+                 collection_data_standard
+             WHERE
+                 sex = '男' AND batch_id = #{batchId}
+             GROUP BY
+                 profession_name) boy
+          ON boy.pName = girl.pName
+    </select>
+
+    <!-- 根据批次ID查询新生录取平均成绩专业排名 -->
+    <select id="selectMajorAvgScoreRank" resultType="map">
+        SELECT
+            profession_name AS majorName,
+            ROUND(AVG(score),2) AS majorAvgScore
+        FROM
+            collection_data_standard
+        WHERE batch_id = #{batchId}
+        GROUP BY profession_name ORDER BY majorAvgScore DESC
+    </select>
+
+    <!-- 根据批次ID同名同姓人数统计最多TOP3姓名 -->
+    <select id="selectSameNameTop3" resultType="map">
+        SELECT
+            name AS sameName,
+            count(*) AS count
+        FROM
+            collection_data_standard
+        WHERE batch_id = #{batchId}
+        GROUP BY sameName ORDER BY count DESC LIMIT 3
+    </select>
+
+    <!-- 根据批次ID出生年份人数占比饼图 -->
+    <select id="selectCountForYear" resultType="map">
+        SELECT
+          YEAR(birth_date) AS year,
+          count(*) AS count
+        FROM
+            collection_data_standard
+        WHERE  birth_date IS NOT NULL AND batch_id = #{batchId}
+        GROUP BY year
+    </select>
+
+    <!-- 根据批次ID查询全校本批新生12星座人数 -->
+    <select id="selectCountForConstellation" resultType="map">
+        SELECT
+            constellation,
+            COUNT(*) AS count
+        FROM
+            collection_data_standard
+        WHERE constellation IS NOT NULL AND batch_id = #{batchId}
+        GROUP BY constellation ORDER BY count DESC
+    </select>
+
+    <!-- 根据批次ID查询同月同日的人数最多TOP3生日 -->
+    <select id="selectSameBirthTop3" resultType="map">
+        SELECT
+            CONCAT(MONTH(birth_date), '月', DAY(birth_date), '日') AS sameBirthDate,
+            COUNT(1)                                             AS count
+        FROM
+            collection_data_standard
+        WHERE birth_date IS NOT NULL AND batch_id = #{batchId}
+        GROUP BY sameBirthDate
+        ORDER BY count DESC
+        LIMIT 3
+    </select>
+
+
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.report.ReportDetailAttributeMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.report.ReportDetailAttribute">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="report_template_id" jdbcType="BIGINT" property="reportTemplateId" />
+    <result column="report_template_page_id" jdbcType="BIGINT" property="reportTemplatePageId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, report_template_id, report_template_page_id, `name`, description
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from report_detail_attribute
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    DELETE FROM report_detail_attribute
+    WHERE id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.ReportDetailAttribute" useGeneratedKeys="true">
+    INSERT INTO report_detail_attribute (report_template_id, report_template_page_id,
+      `name`, description)
+    VALUES (#{reportTemplateId,jdbcType=BIGINT}, #{reportTemplatePageId,jdbcType=BIGINT},
+      #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.ReportDetailAttribute" useGeneratedKeys="true">
+    insert into report_detail_attribute
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reportTemplateId != null">
+        report_template_id,
+      </if>
+      <if test="reportTemplatePageId != null">
+        report_template_page_id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reportTemplateId != null">
+        #{reportTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="reportTemplatePageId != null">
+        #{reportTemplatePageId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.report.ReportDetailAttribute">
+    update report_detail_attribute
+    <set>
+      <if test="reportTemplateId != null">
+        report_template_id = #{reportTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="reportTemplatePageId != null">
+        report_template_page_id = #{reportTemplatePageId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.report.ReportDetailAttribute">
+    UPDATE report_detail_attribute
+    SET report_template_id = #{reportTemplateId,jdbcType=BIGINT},
+      report_template_page_id = #{reportTemplatePageId,jdbcType=BIGINT},
+      `name` = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    WHERE id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 根据模板id获取该模板需要呈现的所有字段 -->
+  <select id="getAllFieldByRtId" resultMap="BaseResultMap">
+      SELECT id,name
+      FROM report_detail_attribute
+      WHERE rt_id = #{rtId}
+  </select>
+</mapper>

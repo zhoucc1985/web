@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollection.ReportTemplatePageMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollection.ReportTemplatePage">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="rt_id" jdbcType="BIGINT" property="rtId" />
+    <result column="page_snap_path" jdbcType="VARCHAR" property="pageSnapPath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, rt_id, page_snap_path
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from report_template_page
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from report_template_page
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.datacollection.ReportTemplatePage">
+    insert into report_template_page (id, code, rt_id, 
+      page_snap_path)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{rtId,jdbcType=BIGINT}, 
+      #{pageSnapPath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.datacollection.ReportTemplatePage" useGeneratedKeys="true" keyProperty="id">
+    insert into report_template_page
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="rtId != null">
+        rt_id,
+      </if>
+      <if test="pageSnapPath != null">
+        page_snap_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="rtId != null">
+        #{rtId,jdbcType=BIGINT},
+      </if>
+      <if test="pageSnapPath != null">
+        #{pageSnapPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollection.ReportTemplatePage">
+    update report_template_page
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="rtId != null">
+        rt_id = #{rtId,jdbcType=BIGINT},
+      </if>
+      <if test="pageSnapPath != null">
+        page_snap_path = #{pageSnapPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollection.ReportTemplatePage">
+    update report_template_page
+    set code = #{code,jdbcType=VARCHAR},
+      rt_id = #{rtId,jdbcType=BIGINT},
+      page_snap_path = #{pageSnapPath,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--根据报告模板ID查询报告模板页面-->
+  <select id="findByReportTemplateId" resultMap="BaseResultMap">
+    select * from report_template_page where rt_id = #{reportTemplateId}
+  </select>
+</mapper>

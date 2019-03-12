@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.CollectBatchidsMapper">
+	<select id="findCollectBatchids" resultType="com.cloud.entity.datacollect.CollectBatchids">
+		SELECT a.id,a.`name`,a.date,a.increat_num AS increatNum  FROM `collect_batchids` a where date = #{date}
+	</select>
+	<insert id="insertCollectBatchids">
+		INSERT INTO collect_batchids(name,date,increat_num)
+		VALUES (#{name},#{date},#{increatNum})
+	</insert>
+	<update id="updateCollectBatchids">
+		UPDATE collect_batchids SET increat_num=increat_num+1 WHERE NAME=#{name} AND DATE=#{date}
+	</update>
+</mapper>

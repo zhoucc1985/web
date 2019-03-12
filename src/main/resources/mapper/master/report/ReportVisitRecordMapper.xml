@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.report.ReportVisitRecordMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.report.ReportVisitRecord">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="report_id" jdbcType="BIGINT" property="reportId"/>
+        <result column="ip_address" jdbcType="VARCHAR" property="ipAddress"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, report_id, ip_address
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from report_visit_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.ReportVisitRecord"
+            useGeneratedKeys="true">
+        INSERT INTO report_visit_record (report_id, ip_address)
+        VALUES (#{reportId,jdbcType=BIGINT}, #{ipAddress,jdbcType=VARCHAR})
+    </insert>
+
+    <!-- 根据报告ID查询访问次数 -->
+    <select id="selectCountByReportId" resultType="_int">
+        SELECT COUNT(*)
+        FROM report_visit_record
+        WHERE report_id = #{reportId}
+    </select>
+
+    <!--根据报告ID查询全部  -->
+    <select id="selectIpListByReportId" resultType="string">
+        SELECT ip_address AS ipAddress
+        FROM report_visit_record
+        WHERE report_id = #{reportId}
+    </select>
+
+    <!-- 查询全部 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM report_visit_record
+    </select>
+
+    <!-- 根据报告ID删除浏览记录 -->
+    <select id="deleteByReportId">
+        DELETE FROM report_visit_record
+        WHERE report_id = #{reportId}
+    </select>
+</mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.temp.datacollect.TempTableMapper">
+
+	<!-- 临时表无效数据列表（分页） -->
+    <select id="findInvalidData" resultType="java.util.Map">
+        select * from ${tableName}
+        where _is_error=1
+        and _batch_id=#{batchId,jdbcType=VARCHAR}
+        limit ${(page-1)*pageSize},${pageSize}
+    </select>
+    <!-- 临时表无效数据总条数（作分页总数） -->
+    <select id="findInvalidDataTotalCount" resultType="java.lang.Long">
+        select count(*) as count  from ${tableName}
+        where _is_error=1 and _batch_id=#{batchId,jdbcType=VARCHAR}
+    </select>
+
+    <!--修改无效数据（新）-->
+    <update id="updateByEntity">
+        update ${tableName} set
+          ${SQL}
+        where _id = #{id}
+    </update>
+
+    <!-- 查询临时表中源数据 -->
+    <select id="findTmpTableDataList" resultType="java.util.Map">
+        select
+        <foreach collection="columns" item="column" index="index" separator=",">
+            ${column}
+        </foreach>
+        from ${tmpTableName}
+        where 1 = 1
+        and _id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!-- 更新添加没条错误数据的错误信息 -->
+    <update id="updateErrorMsg">
+        update ${tmpTableName} set
+        _error_msg = #{errorMsg,jdbcType=VARCHAR},
+        _is_error = #{isError,jdbcType=INTEGER}
+        where _id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- Excel导入数据库后总数据量 -->
+    <select id="exportDataAllCount" resultType="java.lang.Integer">
+		select count(*) as count
+		from ${tableName}
+		where _batch_id = #{batchId,jdbcType=VARCHAR}
+	</select>
+    <!-- 有效数据总数 -->
+    <select id="exportDataEffectiveCount" resultType="java.lang.Integer">
+		select count(*) as count from ${tableName} where _is_error = 0
+		and  _batch_id = #{batchId,jdbcType=VARCHAR}
+	</select>
+    <!-- 无效数据总数 -->
+    <select id="exportDataInvalidCount" resultType="java.lang.Integer">
+		select count(*) as count from ${tableName} where _is_error = 1
+		and  _batch_id = #{batchId,jdbcType=VARCHAR}
+	</select>
+
+    <!--删除数据-->
+    <delete id="deleteInvalidData">
+        DELETE FROM ${tableName} where _id in
+        <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查找无效数据列表 -->
+    <select id="findTableErrorList" resultType="java.util.Map">
+    	 select
+    	  <foreach collection="columnsList" item="column" index="index" separator=",">
+              ${column}
+          </foreach>
+    	 from ${tableName}
+        where _is_error=1 and _batch_id=#{batchId}
+    </select>
+
+    <!--导入Excel数据到数据库临时表-->
+    <insert id="insertIntoTmpTable" >
+        insert into ${tmpTableName}
+          (${columnSql})
+        values ${sql}
+    </insert>
+
+    <!--删除临时表中的无效数据-->
+    <delete id="delInvalidData">
+        delete from ${tmpTableName}
+        where _id in
+        <foreach collection="uniqueIdList" item="id" index="index" separator="," open="(" close=")">
+          ${id}
+        </foreach>
+    </delete>
+
+    <!--插入修改后的数据-->
+    <insert id="insertModifiedData">
+        insert into ${tmpTableName}
+          (${columnSql})
+        values ${sql}
+    </insert>
+
+    <!-- 查找临时表中所有数据，用以批量数据校验 -->
+    <select id="findTmpTableDataAll" resultType="java.util.Map">
+        select
+        <foreach collection="columns" item="column" index="index" separator=",">
+            ${column}
+        </foreach>
+        from ${tmpTableName}
+        where _batch_id = #{batchId}
+    </select>
+
+	<insert id="insertRealTableName">
+		INSERT INTO collect_datas.${realTableName} (
+		${resultStr}
+		) SELECT
+		${resultStr}
+		FROM
+		${tempTableName} where _is_error=0
+		and _batch_id=#{batchId,jdbcType=VARCHAR}
+	</insert>
+
+    <delete id="deleteTempDateByBatchId">
+		delete from ${tableName}
+		where _batch_id = #{batchId,jdbcType=VARCHAR}
+	</delete>
+
+</mapper>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.CollectImportDetailMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollect.CollectImportDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="total_num" jdbcType="INTEGER" property="totalNum" />
+    <result column="effective_num" jdbcType="INTEGER" property="effectiveNum" />
+    <result column="Invalid_num" jdbcType="INTEGER" property="invalidNum" />
+    <result column="load_time" jdbcType="TIMESTAMP" property="loadTime" />
+    <result column="_batch_id" jdbcType="VARCHAR" property="batchId" />
+    <result column="valid_type" jdbcType="INTEGER" property="validType" />
+    <result column="isImport" jdbcType="SMALLINT" property="isimport" />
+    <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+    <result column="user_code" jdbcType="INTEGER" property="userCode" />
+    <result column="first_type_code" jdbcType="INTEGER" property="firstTypeCode" />
+    <result column="second_type_code" jdbcType="INTEGER" property="secondTypeCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, template_id,templateName, total_num, effective_num, Invalid_num, load_time, _batch_id, valid_type,
+    isImport, dept_code, user_code, first_type_code, second_type_code
+  </sql>
+  <sql id="Column_List">
+          cb.id as id,
+          cb.template_id as templateId,
+          ct.template_name as templateName,
+          cb.total_num as totalNum,
+          cb.effective_num as effectiveNum,
+          cb.Invalid_num as InvalidNum,
+          cb.load_time as loadTime,
+          cb._batch_id as batchId,
+          cb.valid_type as validType,
+          cb.isImport as isImport,
+          cb.dept_code as deptCode,
+          cb.user_code as userCode,
+          cb.first_type_code as firstTypeCode,
+          cb.second_type_code as secondTypeCode
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collect_import_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collect_import_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByBatchId">
+    delete from collect_import_detail
+    where _batch_id = #{batchId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datacollect.CollectImportDetail" useGeneratedKeys="true">
+    insert into collect_import_detail (template_id, total_num, effective_num, 
+      Invalid_num, load_time, _batch_id, 
+      valid_type, isImport, dept_code, 
+      user_code, first_type_code, second_type_code 
+      )
+    values (#{templateId,jdbcType=INTEGER}, #{totalNum,jdbcType=INTEGER}, #{effectiveNum,jdbcType=INTEGER}, 
+      #{invalidNum,jdbcType=INTEGER}, #{loadTime,jdbcType=TIMESTAMP}, #{batchId,jdbcType=VARCHAR}, 
+      #{validType,jdbcType=INTEGER}, #{isimport,jdbcType=SMALLINT}, #{deptCode,jdbcType=VARCHAR}, 
+      #{userCode,jdbcType=INTEGER}, #{firstTypeCode,jdbcType=INTEGER}, #{secondTypeCode,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <update id="updateCountType" parameterType="com.cloud.entity.datacollect.CollectImportDetail">
+    UPDATE collect_import_detail SET
+        total_num = #{totalNum,jdbcType=INTEGER},
+        effective_num = #{effectiveNum,jdbcType=INTEGER},
+        Invalid_num = #{invalidNum,jdbcType=INTEGER},
+        valid_type = #{validType,jdbcType=INTEGER}
+    WHERE
+        template_id = #{templateId,jdbcType=INTEGER}
+        AND _batch_id = #{batchId,jdbcType=VARCHAR}
+  </update>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datacollect.CollectImportDetail" useGeneratedKeys="true">
+    insert into collect_import_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="totalNum != null">
+        total_num,
+      </if>
+      <if test="effectiveNum != null">
+        effective_num,
+      </if>
+      <if test="invalidNum != null">
+        Invalid_num,
+      </if>
+      <if test="loadTime != null">
+        load_time,
+      </if>
+      <if test="batchId != null">
+        _batch_id,
+      </if>
+      <if test="validType != null">
+        valid_type,
+      </if>
+      <if test="isimport != null">
+        isImport,
+      </if>
+      <if test="deptCode != null">
+        dept_code,
+      </if>
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="firstTypeCode != null">
+        first_type_code,
+      </if>
+      <if test="secondTypeCode != null">
+        second_type_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="totalNum != null">
+        #{totalNum,jdbcType=INTEGER},
+      </if>
+      <if test="effectiveNum != null">
+        #{effectiveNum,jdbcType=INTEGER},
+      </if>
+      <if test="invalidNum != null">
+        #{invalidNum,jdbcType=INTEGER},
+      </if>
+      <if test="loadTime != null">
+        #{loadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="validType != null">
+        #{validType,jdbcType=INTEGER},
+      </if>
+      <if test="isimport != null">
+        #{isimport,jdbcType=SMALLINT},
+      </if>
+      <if test="deptCode != null">
+        #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null">
+        #{userCode,jdbcType=INTEGER},
+      </if>
+      <if test="firstTypeCode != null">
+        #{firstTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="secondTypeCode != null">
+        #{secondTypeCode,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollect.CollectImportDetail">
+    update collect_import_detail
+    <set>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="totalNum != null">
+        total_num = #{totalNum,jdbcType=INTEGER},
+      </if>
+      <if test="effectiveNum != null">
+        effective_num = #{effectiveNum,jdbcType=INTEGER},
+      </if>
+      <if test="invalidNum != null">
+        Invalid_num = #{invalidNum,jdbcType=INTEGER},
+      </if>
+      <if test="loadTime != null">
+        load_time = #{loadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchId != null">
+        _batch_id = #{batchId,jdbcType=VARCHAR},
+      </if>
+      <if test="validType != null">
+        valid_type = #{validType,jdbcType=INTEGER},
+      </if>
+      <if test="isimport != null">
+        isImport = #{isimport,jdbcType=SMALLINT},
+      </if>
+      <if test="deptCode != null">
+        dept_code = #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null">
+        user_code = #{userCode,jdbcType=INTEGER},
+      </if>
+      <if test="firstTypeCode != null">
+        first_type_code = #{firstTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="secondTypeCode != null">
+        second_type_code = #{secondTypeCode,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollect.CollectImportDetail">
+    update collect_import_detail
+    set template_id = #{templateId,jdbcType=INTEGER},
+      total_num = #{totalNum,jdbcType=INTEGER},
+      effective_num = #{effectiveNum,jdbcType=INTEGER},
+      Invalid_num = #{invalidNum,jdbcType=INTEGER},
+      load_time = #{loadTime,jdbcType=TIMESTAMP},
+      _batch_id = #{batchId,jdbcType=VARCHAR},
+      valid_type = #{validType,jdbcType=INTEGER},
+      isImport = #{isimport,jdbcType=SMALLINT},
+      dept_code = #{deptCode,jdbcType=VARCHAR},
+      user_code = #{userCode,jdbcType=INTEGER},
+      first_type_code = #{firstTypeCode,jdbcType=INTEGER},
+      second_type_code = #{secondTypeCode,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="queryPage" resultType="com.cloud.entity.datacollect.CollectImportDetail" >
+    select
+    <include refid="Column_List"/>
+    from  collect_import_detail cb  left  join  collect_template ct
+    on cb.template_id=ct.template_id
+    where 1=1
+    <if test="startTime!=null">
+      AND cb.load_time &gt;= #{startTime}
+    </if>
+    <if test="endTime!=null">
+      and cb.load_time &lt;= #{endTime}
+    </if>
+    <if test="reportName != null and reportName != ''">
+      <bind name="templateName" value="'%' + reportName + '%'" />
+      AND ct.template_name like  #{templateName}
+    </if>
+    <if test="deptCode != null and deptCode != ''">
+       AND (cb.dept_code = #{deptCode} OR dept_code LIKE CONCAT(#{deptCode},'D%'))
+	</if>
+    ORDER BY _batch_id DESC
+  </select>
+
+  <select id="getTemplateIdByBatchId" resultType="java.lang.Integer">
+    select template_id from collect_import_detail
+    where 1 = 1
+    <if test="batchId != null and batchId != ''">
+      and _batch_id = #{batchId}
+    </if>
+  </select>
+
+  <update id="updateImportDetail">
+		UPDATE collect_import_detail SET isImport=1 WHERE
+		_batch_id=#{batchId}
+  </update>
+
+  <update id="updateBatchValidResult">
+		UPDATE collect_import_detail set valid_type = 2 WHERE _batch_id = #{batchId}
+	</update>
+
+</mapper>

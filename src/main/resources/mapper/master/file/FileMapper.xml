@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.file.FileMapper">
+
+    <!--通过文件中文名在临时表中查询表名-->
+    <select id="selectByFileName" resultType="java.lang.String">
+        SELECT table_name
+        FROM tmp_list_query
+        WHERE table_chinese_name = #{fileName}
+    </select>
+
+    <!--枚举表中查询系统编号-->
+    <select id="selectSysNameCode" resultType="java.util.Map">
+        SELECT id,`value`
+        FROM collect_enum
+        WHERE type = '系统' AND name = #{sysName}
+    </select>
+
+    <select id="selectFirstCode" resultType="java.lang.String">
+        SELECT `value`
+        FROM collect_enum
+        WHERE type = '业务系统分类' AND name = #{firstName} and parent_id = #{parentId}
+    </select>
+
+    <select id="selectSecondCode" resultType="java.lang.String">
+        SELECT `value`
+        FROM collect_enum
+        WHERE type = '子分类' AND name = #{secondName}
+    </select>
+</mapper>

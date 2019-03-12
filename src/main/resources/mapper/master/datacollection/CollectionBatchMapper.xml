@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollection.CollectionBatchMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollection.CollectionBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="report_name" jdbcType="VARCHAR" property="reportName" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="import_time" jdbcType="TIMESTAMP" property="importTime" />
+    <result column="rt_id" jdbcType="BIGINT" property="rtId" />
+    <!--<result column="total_number" jdbcType="INTEGER" property="totalNumber" />
+    <result column="valid_number" jdbcType="INTEGER" property="validNumber" />
+    <result column="invalid_number" jdbcType="INTEGER" property="invalidNumber" />-->
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <collection property="validNumber" select="findValidNumber" column="id"></collection>
+    <collection property="invalidNumber" select="findInValidNumber" column="id"></collection>
+    <collection property="totalNumber" select="findTotalNumber" column="id"></collection>
+  </resultMap>
+  <!--查询批次有效数据数-->
+  <select id="findValidNumber" resultType="java.lang.Integer">
+    select count(*) as validNumber  from collection_data_standard where batch_id=#{id}
+  </select>
+  <!--查询批次无效数据数-->
+  <select id="findInValidNumber" resultType="java.lang.Integer">
+    select count(*) as invalidNumber from collection_data_source where batch_id=#{id} and error_msg is not null
+  </select>
+  <select id="findTotalNumber" resultType="java.lang.Integer">
+    SELECT
+	(
+	SELECT
+		count( * )
+	FROM
+		collection_data_standard
+	WHERE
+		batch_id = #{id}
+		) + (
+	SELECT
+		count( * )
+	FROM
+		collection_data_source
+	WHERE
+	batch_id = #{id}
+	) AS totalNumber
+  </select>
+  <resultMap id="ListBaseResultMap" extends="BaseResultMap" type="com.cloud.entity.datacollection.CollectionBatch">
+    <result column="reportTemplate" jdbcType="VARCHAR" property="templateName"></result>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, report_name, batch_no, org_id, import_time, rt_id, total_number, valid_number, 
+    invalid_number, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from collection_batch
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectByYearRptOrg"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collection_batch
+    where org_id = #{orgId} and DATE_FORMAT(now(),'%Y') = #{nowYear} and rt_id = #{templeId}
+  </select>
+  <sql id="List_Base_Column_List">
+    cb.id, cb.report_name, cb.batch_no, cb.org_id, cb.import_time, cb.rt_id, cb.total_number, cb.valid_number,
+    cb.invalid_number, cb.`status`
+  </sql>
+  <select id="searchCollectBatch"  resultMap="ListBaseResultMap">
+    select
+    <include refid="List_Base_Column_List" />,rt.name as reportTemplate,org.name as schoolName,org.number as orgNumber
+    from collection_batch cb,report_template rt,org_info org
+    where cb.rt_id = rt.id  and cb.org_id = org.id and (org.code=#{orgCode} or org.code like concat(#{orgCode},'D%'))
+    <if test="startTime!=null">
+      AND cb.import_time &gt;= #{startTime}
+    </if>
+    <if test="endTime!=null">
+      and cb.import_time &lt;= #{endTime}
+    </if>
+    <if test="templateName != null and templateName != ''">
+      <bind name="templateName" value="'%' + templateName + '%'" />
+      AND rt.name like  #{templateName}
+  </if>
+    order by cb.batch_no desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from collection_batch
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.datacollection.CollectionBatch">
+    insert into collection_batch (id, report_name, batch_no, 
+      org_id, import_time, rt_id, 
+      total_number, valid_number, invalid_number, 
+      `status`)
+    values (#{id,jdbcType=BIGINT}, #{reportName,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
+      #{orgId,jdbcType=BIGINT}, #{importTime,jdbcType=TIMESTAMP}, #{rtId,jdbcType=BIGINT}, 
+      #{totalNumber,jdbcType=INTEGER}, #{validNumber,jdbcType=INTEGER}, #{invalidNumber,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.datacollection.CollectionBatch" useGeneratedKeys="true" keyProperty="id">
+    insert into collection_batch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="reportName != null">
+        report_name,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="importTime != null">
+        import_time,
+      </if>
+      <if test="rtId != null">
+        rt_id,
+      </if>
+      <if test="totalNumber != null">
+        total_number,
+      </if>
+      <if test="validNumber != null">
+        valid_number,
+      </if>
+      <if test="invalidNumber != null">
+        invalid_number,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="reportName != null">
+        #{reportName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="importTime != null">
+        #{importTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rtId != null">
+        #{rtId,jdbcType=BIGINT},
+      </if>
+      <if test="totalNumber != null">
+        #{totalNumber,jdbcType=INTEGER},
+      </if>
+      <if test="validNumber != null">
+        #{validNumber,jdbcType=INTEGER},
+      </if>
+      <if test="invalidNumber != null">
+        #{invalidNumber,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollection.CollectionBatch">
+    update collection_batch
+    <set>
+      <if test="reportName != null">
+        report_name = #{reportName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="importTime != null">
+        import_time = #{importTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rtId != null">
+        rt_id = #{rtId,jdbcType=BIGINT},
+      </if>
+      <if test="totalNumber != null">
+        total_number = #{totalNumber,jdbcType=INTEGER},
+      </if>
+      <if test="validNumber != null">
+        valid_number = #{validNumber,jdbcType=INTEGER},
+      </if>
+      <if test="invalidNumber != null">
+        invalid_number = #{invalidNumber,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollection.CollectionBatch">
+    update collection_batch
+    set report_name = #{reportName,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=BIGINT},
+      import_time = #{importTime,jdbcType=TIMESTAMP},
+      rt_id = #{rtId,jdbcType=BIGINT},
+      total_number = #{totalNumber,jdbcType=INTEGER},
+      valid_number = #{validNumber,jdbcType=INTEGER},
+      invalid_number = #{invalidNumber,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--选择模板列表-->
+  <select id="findTemplateList" resultType="java.util.Map">
+    SELECT
+      id,
+      table_name
+  FROM
+      `t_table_info`
+  </select>
+
+</mapper>

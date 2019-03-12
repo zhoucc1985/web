@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.ExcelMapper">
+
+    <!--查找临时表-->
+    <select id="findTmpTableName" resultType="java.lang.String">
+        SELECT DISTINCT
+             table_name as tableName
+        FROM
+            `collect_columns`
+        WHERE 1 = 1
+        and template_id = #{templateId}
+    </select>
+
+    <!--临时表所有字段名(不包括唯一id)-->
+    <select id="findTmpTableColumns" resultType="java.util.Map">
+        SELECT
+            column_en_name as en_column,  -- 字段英文名
+            column_ch_name as ch_column, -- 字段中文名
+            sort as sort
+        FROM collect_columns
+        WHERE 1 = 1
+        AND table_name = #{tableName}
+        AND column_en_name not in ('_id','_batch_id','_error_msg','_is_error','id')
+        order by sort
+    </select>
+
+</mapper>

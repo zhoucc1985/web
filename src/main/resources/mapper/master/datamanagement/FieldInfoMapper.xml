@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.FieldInfoMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.FieldInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ser_num" jdbcType="INTEGER" property="serNum"/>
+        <result column="table_field" jdbcType="VARCHAR" property="tableField"/>
+        <result column="field_desc" jdbcType="VARCHAR" property="fieldDesc"/>
+        <result column="data_num" jdbcType="BIGINT" property="dataNum"/>
+        <result column="table_id" jdbcType="BIGINT" property="tableId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, ser_num, table_field, field_desc, data_num, table_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_field_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM t_field_info
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.FieldInfo"
+            useGeneratedKeys="true">
+        INSERT INTO t_field_info (ser_num, table_field, field_desc,
+                                  data_num, table_id)
+        VALUES (#{serNum,jdbcType=INTEGER}, #{tableField,jdbcType=VARCHAR}, #{fieldDesc,jdbcType=VARCHAR},
+                #{dataNum,jdbcType=BIGINT}, #{tableId,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.cloud.entity.datamanagement.FieldInfo" useGeneratedKeys="true">
+        insert into t_field_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serNum != null">
+                ser_num,
+            </if>
+            <if test="tableField != null">
+                table_field,
+            </if>
+            <if test="fieldDesc != null">
+                field_desc,
+            </if>
+            <if test="dataNum != null">
+                data_num,
+            </if>
+            <if test="tableId != null">
+                table_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serNum != null">
+                #{serNum,jdbcType=INTEGER},
+            </if>
+            <if test="tableField != null">
+                #{tableField,jdbcType=VARCHAR},
+            </if>
+            <if test="fieldDesc != null">
+                #{fieldDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="dataNum != null">
+                #{dataNum,jdbcType=BIGINT},
+            </if>
+            <if test="tableId != null">
+                #{tableId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.FieldInfo">
+        update t_field_info
+        <set>
+            <if test="serNum != null">
+                ser_num = #{serNum,jdbcType=INTEGER},
+            </if>
+            <if test="tableField != null">
+                table_field = #{tableField,jdbcType=VARCHAR},
+            </if>
+            <if test="fieldDesc != null">
+                field_desc = #{fieldDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="dataNum != null">
+                data_num = #{dataNum,jdbcType=BIGINT},
+            </if>
+            <if test="tableId != null">
+                table_id = #{tableId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.FieldInfo">
+        UPDATE t_field_info
+        SET ser_num     = #{serNum,jdbcType=INTEGER},
+            table_field = #{tableField,jdbcType=VARCHAR},
+            field_desc  = #{fieldDesc,jdbcType=VARCHAR},
+            data_num    = #{dataNum,jdbcType=BIGINT},
+            table_id    = #{tableId,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="getFieldsByTableId" resultMap="FieldDetailVoMap">
+        SELECT
+        f.*,
+        i.data_num AS totalRecords,
+        IF(f.data_num != 0, ROUND(f.data_num / i.data_num * 100, 2), 0) AS noEmptyRatio,
+        i.empty_num AS emptyNum
+        FROM t_field_info f
+        INNER JOIN t_table_info i ON f.table_id = i.id
+        WHERE f.table_id = #{tableId}
+        <if test="sort != null and sort == 1">
+            order by empty_num desc
+        </if>
+        <if test="sort != null and sort == 2">
+            order by empty_num asc
+        </if>
+    </select>
+
+    <select id="findEmptyTableList" resultType="java.util.Map">
+        SELECT
+            (@row_number := @row_number + 1) AS num,
+            b.file_path,
+            b.file_name
+        FROM
+            t_ftpdatasource a
+            LEFT JOIN t_file_info b ON b.ftp_id = a.id
+            ,
+            (SELECT @row_number := 0) AS t
+        WHERE b.file_size = '0B'
+              AND a.id = #{id}
+        ORDER BY num
+    </select>
+    <resultMap id="FieldDetailVoMap" type="com.cloud.entity.vo.qualityReport.FieldDetailVo" extends="BaseResultMap">
+        <result column="totalRecords" property="totalRecords"/>
+        <result column="noEmptyRatio" property="noEmptyRatio"/>
+    </resultMap>
+</mapper>

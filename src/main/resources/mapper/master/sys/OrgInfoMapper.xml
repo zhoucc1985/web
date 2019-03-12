@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.OrgInfoMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.sys.OrgInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="number" jdbcType="VARCHAR" property="number"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="school_nike_name" jdbcType="VARCHAR" property="schoolNikeName"/>
+        <result column="school_founding_time" jdbcType="DATE" property="schoolFoundingTime"/>
+        <result column="school_address" jdbcType="VARCHAR" property="schoolAddress"/>
+        <result column="school_motto" jdbcType="VARCHAR" property="schoolMotto"/>
+        <result column="school_logo_path" jdbcType="VARCHAR" property="schoolLogoPath"/>
+        <result column="school_id" jdbcType="VARCHAR" property="schoolId"/>
+        <result column="parent_number" jdbcType="VARCHAR" property="parentNumber"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="parent_code" jdbcType="VARCHAR" property="parentCode"/>
+        <result column="province_id" property="provinceId"/>
+        <result column="city_id" property="cityId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, `number`, `name`, school_nike_name, school_founding_time, school_address, school_motto,
+        school_logo_path, school_id, parent_number, `type`, code, parent_code,province_id,city_id
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select o.*,p.`name` as provinceName,c.`name` as cityName
+         from org_info o LEFT JOIN province_data p on o.province_id=p.id
+         LEFT JOIN city_data c on o.city_id=c.id 
+         where o.id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM org_info
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.sys.OrgInfo"
+            useGeneratedKeys="true">
+        INSERT INTO org_info (`number`, `name`, school_nike_name,
+                              school_founding_time, school_address, school_motto,
+                              school_logo_path, school_id, parent_number,
+                              `type`, code, parent_code,province_id,city_id)
+        VALUES (#{number,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{schoolNikeName,jdbcType=VARCHAR},
+                                            #{schoolFoundingTime,jdbcType=DATE}, #{schoolAddress,jdbcType=VARCHAR},
+                                            #{schoolMotto,jdbcType=VARCHAR},
+                                            #{schoolLogoPath,jdbcType=VARCHAR}, #{schoolId,jdbcType=VARCHAR},
+                                            #{parentNumber,jdbcType=VARCHAR},
+                                            #{type,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+                #{parentCode,jdbcType=VARCHAR},#{provinceId},#{cityId})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.sys.OrgInfo"
+            useGeneratedKeys="true">
+        insert into org_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="number != null">
+                `number`,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="schoolNikeName != null">
+                school_nike_name,
+            </if>
+            <if test="schoolFoundingTime != null">
+                school_founding_time,
+            </if>
+            <if test="schoolAddress != null">
+                school_address,
+            </if>
+            <if test="schoolMotto != null">
+                school_motto,
+            </if>
+            <if test="schoolLogoPath != null">
+                school_logo_path,
+            </if>
+            <if test="schoolId != null">
+                school_id,
+            </if>
+            <if test="parentNumber != null">
+                parent_number,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="code != null">
+                `code`,
+            </if>
+            <if test="parentCode != null">
+                `parent_code`,
+            </if>
+            <if test="provinceId != null">
+                `province_id`,
+            </if>
+            <if test="cityId != null">
+                `city_id`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="number != null">
+                #{number,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolNikeName != null">
+                #{schoolNikeName,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolFoundingTime != null">
+                #{schoolFoundingTime,jdbcType=DATE},
+            </if>
+            <if test="schoolAddress != null">
+                #{schoolAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolMotto != null">
+                #{schoolMotto,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolLogoPath != null">
+                #{schoolLogoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolId != null">
+                #{schoolId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentNumber != null">
+                #{parentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceId != null">
+                #{provinceId},
+            </if>
+            <if test="cityId != null">
+                #{cityId},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.sys.OrgInfo">
+        update org_info
+        <set>
+            <if test="number != null">
+                `number` = #{number,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolNikeName != null">
+                school_nike_name = #{schoolNikeName,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolFoundingTime != null">
+                school_founding_time = #{schoolFoundingTime,jdbcType=DATE},
+            </if>
+            <if test="schoolAddress != null">
+                school_address = #{schoolAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolMotto != null">
+                school_motto = #{schoolMotto,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolLogoPath != null">
+                school_logo_path = #{schoolLogoPath,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolId != null">
+                school_id = #{schoolId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentNumber != null">
+                parent_number = #{parentNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null">
+                `code` = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="parentCode != null">
+                `parent_code` = #{parentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceId != null">
+                `province_id` = #{provinceId},
+            </if>
+            <if test="cityId != null">
+                `city_id` = #{cityId},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.sys.OrgInfo">
+        UPDATE org_info
+        SET `number`             = #{number,jdbcType=VARCHAR},
+            `name`               = #{name,jdbcType=VARCHAR},
+            school_nike_name     = #{schoolNikeName,jdbcType=VARCHAR},
+            school_founding_time = #{schoolFoundingTime,jdbcType=DATE},
+            school_address       = #{schoolAddress,jdbcType=VARCHAR},
+            school_motto         = #{schoolMotto,jdbcType=VARCHAR},
+            school_logo_path     = #{schoolLogoPath,jdbcType=VARCHAR},
+            school_id            = #{schoolId,jdbcType=VARCHAR},
+            parent_number        = #{parentNumber,jdbcType=VARCHAR},
+            `type`               = #{type,jdbcType=VARCHAR},
+            `code`               = #{code,jdbcType=VARCHAR},
+            `parent_code`        = #{parentCode,jdbcType=VARCHAR}
+            `province_id`        = #{provinceId}
+            `city_id`        = #{cityId}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <resultMap id="orgInfoTree" extends="BaseResultMap" type="com.cloud.common.vo.sys.org.OrgInfoTreeVo">
+    </resultMap>
+
+    <!-- 根据当前登录用户组织机构id获取组织机构树 -->
+    <select id="getUserOrganization" resultMap="orgInfoTree">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE code = #{code} OR code LIKE CONCAT(#{code},'D%')
+        ORDER BY id
+    </select>
+
+    <!-- 根据组织机构号查询父节点 -->
+    <select id="selectByParentNumber" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE number = #{parentNumber}
+    </select>
+
+    <!-- 根据ID获取组织的以及上级机构的基础信息 -->
+    <select id="getCurrentAndParentOrg" resultType="com.cloud.common.vo.sys.org.OrgDetailVo">
+        SELECT
+            c.id     AS id,
+            c.number AS number,
+            c.name   AS name,
+            c.school_logo_path AS schoolLogoPath,
+            c.type   AS type,
+            c.code   AS code,
+            p.id     AS parentId,
+            c.parent_number AS parentNumber,
+            p.name   AS parentName,
+            p.code   AS parentCode
+        FROM org_info c
+            LEFT JOIN org_info p ON c.parent_number = p.number
+        WHERE c.id = #{id}
+    </select>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查系统中有多少个相同的机构号 -->
+    <select id="selectNumberOnly" resultType="_int">
+        SELECT count(1)
+        FROM org_info
+        WHERE number = #{number}
+    </select>
+
+    <!-- 根据父组织机构号获取所有同级组织机构 -->
+    <select id="selectChildrenByParentCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE parent_code = #{parentCode}
+    </select>
+
+    <!-- 获取最后一个已 'Z'开头的机构 -->
+    <select id="selectLastOrgByZFront" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE number LIKE concat('Z','%')
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+
+    <!-- 查询所有数据 -->
+    <select id="selectAllList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+    </select>
+
+    <!-- 根据父组织机构编号获取所有子组织机构 -->
+    <select id="selectChildrenByParentNumber" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE parent_number = #{number}
+    </select>
+
+    <!-- 根据组织机构编码查询 -->
+    <select id="selectByCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE code = #{code}
+    </select>
+
+    <!-- 根据父组织机构号和名称查询 -->
+    <select id="selectByParentNumberAndName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM org_info
+        WHERE parent_number = #{parentNumber} AND name = #{name} LIMIT 1
+    </select>
+
+    <!-- 批量删除 -->
+    <delete id="batchDeleteById">
+        DELETE FROM org_info
+        WHERE id IN
+        <foreach collection="delIds" item="id" separator="," open="(" close=")">
+            ${id}
+        </foreach>
+    </delete>
+    <!--学校信息是否已经完善-->
+    <select id="schoolInfoIsComplete" resultType="java.lang.Boolean">
+        SELECT
+	count( id )
+FROM
+	org_info o
+WHERE
+	o.id = #{orgId}
+	AND (
+	(o.province_id IS NULL and o.city_id IS NULL)
+	OR o.school_logo_path IS NULL
+	OR o.school_nike_name IS NULL
+	)
+    </select>
+</mapper>

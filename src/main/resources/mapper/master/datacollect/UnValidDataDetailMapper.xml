@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.UnValidDataDetailMapper">
+
+    <sql id="query_column">
+        SELECT
+            c.column_en_name as en_column,
+            c.column_ch_name as ch_column
+        FROM collect_import_detail a
+        left join collect_template b on b.template_id = a.template_id
+        left join collect_columns c on c.template_id = a.template_id
+        where 1 = 1
+    </sql>
+
+    <!--无效数据统计头-->
+    <select id="findInvalidDataStat" resultType="java.util.Map">
+        SELECT
+			_batch_id as batch_id,
+			load_time,
+			Invalid_num
+		FROM
+			collect_import_detail
+		WHERE 1 = 1
+        <if test="batchId != null and batchId != ''" >
+        	and _batch_id = #{batchId}
+        </if>
+    </select>
+
+    <!--临时表表名-->
+    <select id="findTmpTableNameByBatchId" resultType="java.lang.String">
+        SELECT
+            b.temp_table_name as tmp_table_name
+        FROM collect_import_detail a
+        left join collect_template b on b.template_id = a.template_id
+        where 1 = 1
+          and a._batch_id  = #{batchId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findTmpTableNameByTempId" resultType="java.lang.String">
+        SELECT DISTINCT
+            temp_table_name as tmp_table_name
+        FROM collect_template
+        where 1 = 1
+            and template_id = #{templateId}
+    </select>
+
+    <!--临时表所有字段名-->
+    <select id="findTmpTableColumns" resultType="java.util.Map">
+        SELECT
+            column_en_name as en_column,
+            column_ch_name as ch_column
+        FROM collect_columns
+        where 1 = 1
+        and column_en_name not in ('_id','_batch_id','_error_msg','_is_error','id')
+        <if test="tableName!=null and tableName != ''">
+            and table_name = #{tableName}
+        </if>
+    </select>
+
+    <select id="findTmpTableColumnsIncludeId" resultType="java.util.Map">
+        SELECT
+            a.column_en_name AS en_column,
+            a.column_ch_name AS ch_column
+        FROM
+            collect_columns a
+            left join collect_template b on b.template_id = a.template_id
+        WHERE 1=1
+            and a.column_en_name not in ('_batch_id','_error_msg','_is_error','id')
+            and b.temp_table_name = #{tableName}
+    </select>
+
+    <!--查找无效数据列表-->
+    <select id="findInvalidDataList" resultType="java.util.Map">
+        select * from ${tableName} order by _id
+        limit ${(page-1) * pageSize},${pageSize}
+    </select>
+
+	 <!--临时表表中文名-->
+    <select id="findTmpTableChName" resultType="java.lang.String">
+        SELECT
+             b.template_name AS chName
+        FROM collect_import_detail a
+        left join collect_template b on b.template_id = a.template_id
+        where 1 = 1
+          and a._batch_id  = #{batchId}
+    </select>
+
+    <!--临时表所有字段名 包含id-->
+    <select id="findColumnsTbaleList" resultType="java.util.Map">
+        SELECT
+        c.column_en_name as en_column,  -- 字段英文名
+        c.column_ch_name as ch_column -- 字段中文名
+        FROM collect_import_detail a
+        left join collect_template b on b.template_id = a.template_id
+        left join collect_columns c on c.template_id = a.template_id
+        where 1 = 1
+        and c.column_en_name not in ('_error_msg','_is_error','id')
+        <if test="batchId != null and batchId != ''" >
+            and a._batch_id  = #{batchId}
+        </if>
+        <if test="tableName!=null and tableName != ''">
+            and b.temp_table_name = #{tableName}
+        </if>
+    </select>
+
+    <!--查找临时表中所有的字段名-->
+    <select id="findTableAllColumns" resultType="java.util.Map">
+        <include refid="query_column"/>
+        <if test="batchId != null and batchId != ''" >
+            and a._batch_id  = #{batchId}
+        </if>
+        <if test="tableName!=null and tableName != ''">
+            and b.temp_table_name = #{tableName}
+        </if>
+    </select>
+
+
+</mapper>

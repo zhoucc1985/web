@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.report.ReportDetailValueMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.report.ReportDetailValue">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="report_id" jdbcType="BIGINT" property="reportId" />
+    <result column="report_detail_attribute_id" jdbcType="BIGINT" property="reportDetailAttributeId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cloud.entity.report.ReportDetailValue">
+    <result column="value" jdbcType="LONGVARCHAR" property="value" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, report_id, report_detail_attribute_id
+  </sql>
+  <sql id="Blob_Column_List">
+    `value`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from report_detail_value
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from report_detail_value
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.ReportDetailValue" useGeneratedKeys="true">
+    insert into report_detail_value (report_id, report_detail_attribute_id, 
+      `value`)
+    values (#{reportId,jdbcType=BIGINT}, #{reportDetailAttributeId,jdbcType=BIGINT}, 
+      #{value,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.ReportDetailValue" useGeneratedKeys="true">
+    insert into report_detail_value
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reportId != null">
+        report_id,
+      </if>
+      <if test="reportDetailAttributeId != null">
+        report_detail_attribute_id,
+      </if>
+      <if test="value != null">
+        `value`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reportId != null">
+        #{reportId,jdbcType=BIGINT},
+      </if>
+      <if test="reportDetailAttributeId != null">
+        #{reportDetailAttributeId,jdbcType=BIGINT},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.report.ReportDetailValue">
+    update report_detail_value
+    <set>
+      <if test="reportId != null">
+        report_id = #{reportId,jdbcType=BIGINT},
+      </if>
+      <if test="reportDetailAttributeId != null">
+        report_detail_attribute_id = #{reportDetailAttributeId,jdbcType=BIGINT},
+      </if>
+      <if test="value != null">
+        `value` = #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cloud.entity.report.ReportDetailValue">
+    update report_detail_value
+    set report_id = #{reportId,jdbcType=BIGINT},
+      report_detail_attribute_id = #{reportDetailAttributeId,jdbcType=BIGINT},
+      `value` = #{value,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.report.ReportDetailValue">
+    update report_detail_value
+    set report_id = #{reportId,jdbcType=BIGINT},
+      report_detail_attribute_id = #{reportDetailAttributeId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 根据报告ID删除所有对应的属性值 -->
+  <delete id="deleteByReportId">
+    DELETE FROM report_detail_value
+    WHERE report_id = #{reportId}
+  </delete>
+</mapper>

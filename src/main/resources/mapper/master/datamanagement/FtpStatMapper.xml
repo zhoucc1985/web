@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.FtpStatMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.FtpStat">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ftp_id" jdbcType="BIGINT" property="ftpId"/>
+        <result column="file_num" jdbcType="INTEGER" property="fileNum"/>
+        <result column="empty_num" jdbcType="INTEGER" property="emptyNum"/>
+        <result column="noempty_num" jdbcType="INTEGER" property="noemptyNum"/>
+        <result column="file_size" jdbcType="VARCHAR" property="fileSize"/>
+        <result column="rate" jdbcType="VARCHAR" property="rate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, ftp_id, file_num, empty_num, noempty_num, file_size, rate
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_ftp_stat
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM t_ftp_stat
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.FtpStat"
+            useGeneratedKeys="true">
+        INSERT INTO t_ftp_stat (ftp_id, file_num, empty_num,
+                                noempty_num, file_size, rate
+        )
+        VALUES (#{ftpId,jdbcType=BIGINT}, #{fileNum,jdbcType=INTEGER}, #{emptyNum,jdbcType=INTEGER},
+                #{noemptyNum,jdbcType=INTEGER}, #{fileSize,jdbcType=VARCHAR}, #{rate,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.FtpStat"
+            useGeneratedKeys="true">
+        insert into t_ftp_stat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ftpId != null">
+                ftp_id,
+            </if>
+            <if test="fileNum != null">
+                file_num,
+            </if>
+            <if test="emptyNum != null">
+                empty_num,
+            </if>
+            <if test="noemptyNum != null">
+                noempty_num,
+            </if>
+            <if test="fileSize != null">
+                file_size,
+            </if>
+            <if test="rate != null">
+                rate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ftpId != null">
+                #{ftpId,jdbcType=BIGINT},
+            </if>
+            <if test="fileNum != null">
+                #{fileNum,jdbcType=INTEGER},
+            </if>
+            <if test="emptyNum != null">
+                #{emptyNum,jdbcType=INTEGER},
+            </if>
+            <if test="noemptyNum != null">
+                #{noemptyNum,jdbcType=INTEGER},
+            </if>
+            <if test="fileSize != null">
+                #{fileSize,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                #{rate,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.FtpStat">
+        update t_ftp_stat
+        <set>
+            <if test="ftpId != null">
+                ftp_id = #{ftpId,jdbcType=BIGINT},
+            </if>
+            <if test="fileNum != null">
+                file_num = #{fileNum,jdbcType=INTEGER},
+            </if>
+            <if test="emptyNum != null">
+                empty_num = #{emptyNum,jdbcType=INTEGER},
+            </if>
+            <if test="noemptyNum != null">
+                noempty_num = #{noemptyNum,jdbcType=INTEGER},
+            </if>
+            <if test="fileSize != null">
+                file_size = #{fileSize,jdbcType=VARCHAR},
+            </if>
+            <if test="rate != null">
+                rate = #{rate,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.FtpStat">
+        UPDATE t_ftp_stat
+        SET ftp_id      = #{ftpId,jdbcType=BIGINT},
+            file_num    = #{fileNum,jdbcType=INTEGER},
+            empty_num   = #{emptyNum,jdbcType=INTEGER},
+            noempty_num = #{noemptyNum,jdbcType=INTEGER},
+            file_size   = #{fileSize,jdbcType=VARCHAR},
+            rate        = #{rate,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="getFtpQualityReport" resultMap="FtpQualityReportVoMap">
+        SELECT
+            f.`*`,
+            d.ftp_ip,
+            d.path,
+            d.user_name,
+            d.report_status,
+            d.check_time,
+            d.is_connection
+        FROM t_ftpdatasource d
+            LEFT JOIN t_ftp_stat f ON f.ftp_id = d.id
+        WHERE d.status != -1
+        <if test="orgId != null and orgId != ''">
+            AND (org_id = #{orgId} OR org_id LIKE CONCAT(#{orgId},'D%'))
+        </if>
+        ORDER BY d.report_status
+    </select>
+    <resultMap id="FtpQualityReportVoMap" type="com.cloud.entity.vo.qualityReport.FtpQualityReportVo">
+        <result column="id" property="id"/>
+        <result column="ftp_id" property="ftpId"/>
+        <result column="ftp_ip" property="ftpIp"/>
+        <result column="path" property="path"/>
+        <result column="user_name" property="userName"/>
+        <result column="report_status" property="reportStatus"/>
+        <result column="check_time" property="checkTime"/>
+        <result column="file_num" jdbcType="INTEGER" property="fileNum"/>
+        <result column="empty_num" jdbcType="INTEGER" property="emptyNum"/>
+        <result column="noempty_num" jdbcType="INTEGER" property="noemptyNum"/>
+        <result column="file_size" jdbcType="VARCHAR" property="fileSize"/>
+        <result column="rate" jdbcType="VARCHAR" property="rate"/>
+    </resultMap>
+</mapper>

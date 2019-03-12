@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollection.CollectionDataStandardMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollection.CollectionDataStandard">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="source_id" jdbcType="BIGINT" property="sourceId" />
+    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+    <result column="birth_date" jdbcType="DATE" property="birthDate" />
+    <result column="birth_province" jdbcType="VARCHAR" property="birthProvince" />
+    <result column="birth_city" jdbcType="VARCHAR" property="birthCity" />
+    <result column="college_name" jdbcType="VARCHAR" property="collegeName" />
+    <result column="profession_name" jdbcType="VARCHAR" property="professionName" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="constellation" jdbcType="VARCHAR" property="constellation" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="batch_id" jdbcType="BIGINT" property="batchId" />
+    <result column="generate" jdbcType="TINYINT" property="generate" />
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, source_id, student_no, `name`, sex, age, idcard, birth_date, birth_province, 
+    birth_city, college_name, profession_name, org_id, constellation, score, batch_id, 
+    generate,org_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from collection_data_standard
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from collection_data_standard
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.datacollection.CollectionDataStandard">
+    insert into collection_data_standard (id, source_id, student_no, 
+      `name`, sex, age, idcard, 
+      birth_date, birth_province, birth_city, 
+      college_name, profession_name, org_id, 
+      constellation, score, batch_id, 
+      generate,org_code)
+    values (#{id,jdbcType=BIGINT}, #{sourceId,jdbcType=BIGINT}, #{studentNo,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{idcard,jdbcType=VARCHAR}, 
+      #{birthDate,jdbcType=DATE}, #{birthProvince,jdbcType=VARCHAR}, #{birthCity,jdbcType=VARCHAR}, 
+      #{collegeName,jdbcType=VARCHAR}, #{professionName,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT}, 
+      #{constellation,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}, #{batchId,jdbcType=BIGINT}, 
+      #{generate,jdbcType=TINYINT},#{orgCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.datacollection.CollectionDataStandard" useGeneratedKeys="true" keyProperty="id">
+    insert into collection_data_standard
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sourceId != null">
+        source_id,
+      </if>
+      <if test="studentNo != null">
+        student_no,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="idcard != null">
+        idcard,
+      </if>
+      <if test="birthDate != null">
+        birth_date,
+      </if>
+      <if test="birthProvince != null">
+        birth_province,
+      </if>
+      <if test="birthCity != null">
+        birth_city,
+      </if>
+      <if test="collegeName != null">
+        college_name,
+      </if>
+      <if test="professionName != null">
+        profession_name,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="constellation != null">
+        constellation,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="generate != null">
+        generate,
+      </if>
+      <if test="orgCOde != null">
+        org_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="studentNo != null">
+        #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null">
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null">
+        #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="birthProvince != null">
+        #{birthProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="birthCity != null">
+        #{birthCity,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null">
+        #{collegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="professionName != null">
+        #{professionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="constellation != null">
+        #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=BIGINT},
+      </if>
+      <if test="generate != null">
+        #{generate,jdbcType=TINYINT},
+      </if>
+      <if test="orgCode != null">
+        #{orgCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollection.CollectionDataStandard">
+    update collection_data_standard
+    <set>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="studentNo != null">
+        student_no = #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null">
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null">
+        birth_date = #{birthDate,jdbcType=DATE},
+      </if>
+      <if test="birthProvince != null">
+        birth_province = #{birthProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="birthCity != null">
+        birth_city = #{birthCity,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null">
+        college_name = #{collegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="professionName != null">
+        profession_name = #{professionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="constellation != null">
+        constellation = #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=BIGINT},
+      </if>
+      <if test="generate != null">
+        generate = #{generate,jdbcType=TINYINT},
+      </if>
+      <if test="orgCode != null">
+        org_code = #{orgCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollection.CollectionDataStandard">
+    update collection_data_standard
+    set source_id = #{sourceId,jdbcType=BIGINT},
+      student_no = #{studentNo,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      birth_date = #{birthDate,jdbcType=DATE},
+      birth_province = #{birthProvince,jdbcType=VARCHAR},
+      birth_city = #{birthCity,jdbcType=VARCHAR},
+      college_name = #{collegeName,jdbcType=VARCHAR},
+      profession_name = #{professionName,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=BIGINT},
+      constellation = #{constellation,jdbcType=VARCHAR},
+      score = #{score,jdbcType=DOUBLE},
+      batch_id = #{batchId,jdbcType=BIGINT},
+      generate = #{generate,jdbcType=TINYINT},
+      org_code = #{orgCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 导入字段 -->
+  <sql id="Import_Column_List">
+   source_id, student_no, `name`, sex, age, idcard, birth_date, birth_province,
+    birth_city, college_name, profession_name, org_id, constellation, score, batch_id,
+    generate,org_code
+  </sql>
+  <!--批量插入，如果已经存在学号与学校一样的则忽略-->
+  <insert id="insertOrUpdateStandardByBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into collection_data_standard(
+    <include refid="Import_Column_List"></include>
+    )VALUES
+    <foreach collection ="list" item="collectionDataStandard" index= "index" separator =",">
+      (
+      #{collectionDataStandard.sourceId},#{collectionDataStandard.studentNo}, #{collectionDataStandard.name}, #{collectionDataStandard.sex},
+      #{collectionDataStandard.age}, #{collectionDataStandard.idcard}, #{collectionDataStandard.birthDate},
+      #{collectionDataStandard.birthProvince}, #{collectionDataStandard.birthCity},
+      #{collectionDataStandard.collegeName},#{collectionDataStandard.professionName},
+      #{collectionDataStandard.orgId}, #{collectionDataStandard.constellation},
+      #{collectionDataStandard.score}, #{collectionDataStandard.batchId},
+      #{collectionDataStandard.generate},#{collectionDataStandard.orgCode}
+      )
+    </foreach>
+    ON DUPLICATE KEY UPDATE source_id = VALUES (source_id),`name` = VALUES (`name`),sex = values (sex),age = values (age),
+    idcard = values (idcard),birth_date = values (birth_date),birth_province = values (birth_province),birth_city = values (birth_city),
+    college_name = values (college_name),profession_name = values (profession_name),org_id = values (org_id),
+    constellation = values (constellation),score = values (score),batch_id = values (batch_id),
+    generate = values (generate),org_code = values (org_code)
+  </insert>
+
+  <!-- 根据批次ID查询 -->
+  <select id="selectAllByBatchId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collection_data_standard
+    where batch_id = #{batchId}
+  </select>
+
+  <!-- 根据批次ID更新数据是否生成报告状态 -->
+  <update id="updateGenerateStatusByBatchId">
+    UPDATE collection_data_standard SET generate = #{status}
+    WHERE batch_id = #{batchId}
+  </update>
+</mapper>

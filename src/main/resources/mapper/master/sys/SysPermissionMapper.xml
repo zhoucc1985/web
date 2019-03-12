@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.SysPermissionMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.sys.SysPermission">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="descreption" jdbcType="VARCHAR" property="descreption" />
+    <result column="permission_type" jdbcType="BIGINT" property="permissionType" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, parent_id, descreption, permission_type, `status`, code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_permission
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_permission
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.sys.SysPermission">
+    insert into sys_permission (id, `name`, parent_id, 
+      descreption, permission_type, `status`, 
+      code)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
+      #{descreption,jdbcType=VARCHAR}, #{permissionType,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.sys.SysPermission">
+    insert into sys_permission
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="descreption != null">
+        descreption,
+      </if>
+      <if test="permissionType != null">
+        permission_type,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="descreption != null">
+        #{descreption,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionType != null">
+        #{permissionType,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.sys.SysPermission">
+    update sys_permission
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="descreption != null">
+        descreption = #{descreption,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionType != null">
+        permission_type = #{permissionType,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.sys.SysPermission">
+    update sys_permission
+    set `name` = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      descreption = #{descreption,jdbcType=VARCHAR},
+      permission_type = #{permissionType,jdbcType=BIGINT},
+      `status` = #{status,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    
+    <select id="findPermissionNameByUserId" resultMap="BaseResultMap">
+    SELECT * FROM sys_permission
+    WHERE EXISTS(
+      SELECT permission_id from sys_role_permission_relation
+      WHERE EXISTS(
+              SELECT role_id from sys_user_role_relation
+              WHERE user_id = #{userId}
+      )
+    )
+  </select>
+  <!-- 由角色id得到角色权限 -->
+  <select id="findPermissionNameByRoleId" resultMap="BaseResultMap">
+    select p.*,r.id as relationId from sys_permission p LEFT JOIN sys_role_permission_relation r 
+    on p.id=r.permission_id and r.role_id=#{roleId} where p.`status`='NORMAL' 
+    <if test="permissionType!=null and permissionType!='' ">
+       <if test="permissionType == 'ORDINARY'.toString() ">
+         and permission_type=2
+       </if>
+    </if> 
+     ORDER BY p.id asc  
+  </select>
+  <!-- 查询该角色可分配的权限 -->
+  <select id="findPremissionObtainByRoleType" resultMap="BaseResultMap">
+    SELECT * from sys_permission WHERE 1=1
+    <if test="roleType=='ORDINARY'.toString() ">
+      and permission_type=2
+    </if>
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+   select * from sys_permission
+  </select>
+</mapper>

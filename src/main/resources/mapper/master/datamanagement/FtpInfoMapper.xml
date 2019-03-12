@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.FtpInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.FileInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_size" jdbcType="VARCHAR" property="fileSize" />
+    <result column="ftp_id" jdbcType="BIGINT" property="ftpId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, file_path, file_name, file_size, ftp_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_ftp_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_ftp_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <!--新增数据-->
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.FileInfo" useGeneratedKeys="true">
+    insert into t_ftp_info (file_path, file_name, file_size,
+                            ftp_id)
+    values (#{filePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{fileSize,jdbcType=VARCHAR},
+            #{ftpId,jdbcType=BIGINT})
+  </insert>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.FileInfo" useGeneratedKeys="true">
+    insert into t_ftp_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileSize != null">
+        file_size,
+      </if>
+      <if test="ftpId != null">
+        ftp_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        #{fileSize,jdbcType=VARCHAR},
+      </if>
+      <if test="ftpId != null">
+        #{ftpId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.FileInfo">
+    update t_ftp_info
+    <set>
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        file_size = #{fileSize,jdbcType=VARCHAR},
+      </if>
+      <if test="ftpId != null">
+        ftp_id = #{ftpId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.FileInfo">
+    update t_ftp_info
+    set file_path = #{filePath,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=VARCHAR},
+      ftp_id = #{ftpId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="getFtps" resultMap="FtpDetailVoMap">
+    select i.`*`,f.modified_time from t_file_info i inner join t_ftpdatasource f on i.ftp_id = f.id where i.ftp_id = #{ftpId}
+  </select>
+  <resultMap id="FtpDetailVoMap" type="com.cloud.entity.vo.qualityReport.FtpDetailVo" extends="BaseResultMap">
+    <result property="modifiedTime" column="modified_time" />
+  </resultMap>
+</mapper>

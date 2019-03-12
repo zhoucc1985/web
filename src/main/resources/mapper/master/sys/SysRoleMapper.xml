@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.sys.SysRole">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_type" jdbcType="VARCHAR" property="roleType" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="default_role" jdbcType="BIT" property="defaultRole" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_name, role_type, org_id, remarks,default_role 
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.cloud.entity.sys.SysRole" >
+    insert into sys_role (id, role_name, role_type, 
+      org_id, remarks,default_role)
+    values (#{id,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleType,jdbcType=VARCHAR}, 
+      #{orgId,jdbcType=BIGINT}, #{remarks,jdbcType=VARCHAR}), #{defaultRole,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.cloud.entity.sys.SysRole">
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleType != null">
+        role_type,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="defaultRole != null">
+        default_role,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        #{roleType,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultRole != null">
+        #{defaultRole,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.sys.SysRole">
+    update sys_role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null">
+        role_type = #{roleType,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultRole != null">
+        default_role = #{defaultRole,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.sys.SysRole">
+    update sys_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_type = #{roleType,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=BIGINT},
+      remarks = #{remarks,jdbcType=VARCHAR}
+      default_role = #{defaultRole,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <!-- 查询用户所拥有的角色 -->
+  <select id="selectRoleNameByUserId" resultMap="BaseResultMap">
+    SELECT role.id,role.role_name,role.role_type_id
+    FROM sys_role role
+    JOIN sys_role_type type
+    ON role.role_type_id = type.id
+    WHERE EXISTS(
+      SELECT role_id from sys_user_role_relation
+      WHERE user_id = #{uId}
+    )
+  </select>
+  <!-- 获取角色列表 -->
+  <select id="findRoleList" resultMap="BaseResultMap">
+    SELECT r.*,o.name as orgName,o.id as orgId,o.`code` as orgCode
+     from sys_role r LEFT JOIN org_info o on r.org_id=o.id
+      WHERE 1=1 
+     <if test="roleName!=null and roleName!=''">
+       <bind name="roleName" value="'%' + roleName + '%'" />
+       and r.role_name like #{roleName} 
+     </if>
+     <if test="roleType!=null and roleType!='' ">
+       and r.role_type = #{roleType} 
+     </if> 
+     <if test="orgCode!=null">
+       and (o.code = #{orgCode} OR o.code LIKE CONCAT(#{orgCode},'D%') ) 
+     </if>
+     <if test="orgId!=null">
+       and o.id=#{orgId}
+     </if>
+  </select>
+  <!-- 由角色名称获取角色信息 -->
+  <select id="findRoleByNameAndOrgId" resultMap="BaseResultMap">
+    SELECT r.* from sys_role r LEFT JOIN org_info o on r.org_id=o.id 
+     WHERE role_name=#{roleName} 
+     <if test="orgId!=null">
+      and o.id = #{orgId} 
+     </if>
+     <if test="orgCode!=null and orgCode!='' ">
+      and (o.code = #{orgCode} OR o.code LIKE CONCAT(#{orgCode},'D%'))
+     </if>
+  </select>
+  <!--获取当前机构的所有角色  -->
+  <select id="findRoleByOrgId" resultMap="BaseResultMap">
+     select * from sys_role where org_id=#{orgId}
+     <if test="roleName!=null and roleName!=''">
+       <bind name="roleName" value="'%' + roleName + '%'" />
+       and role_name like #{roleName} 
+     </if>
+     <if test="roleType!='' and roleType!=null ">
+       and role_type=#{roleType}
+     </if>
+  </select>
+  <!-- 由角色名称获取角色信息 -->
+  <select id="findRoleByOrgCode" resultMap="BaseResultMap">
+    SELECT r.* from sys_role r LEFT JOIN org_info o on r.org_id=o.id 
+     where o.code = #{code} OR o.code LIKE CONCAT(#{code},'D%')
+  </select>
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.CollectRuleMapper">
+	<resultMap id="BaseResultMapTmp" type="com.cloud.entity.datacollect.CollectRule">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="column_id" jdbcType="INTEGER" property="columnId" />
+		<result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+		<result column="key_word" jdbcType="VARCHAR" property="keyWord" />
+		<result column="rule_type" jdbcType="VARCHAR" property="ruleType" />
+		<result column="format_str" jdbcType="VARCHAR" property="formatStr" />
+		<result column="min_length" jdbcType="INTEGER" property="minLength" />
+		<result column="max_length" jdbcType="INTEGER" property="maxLength" />
+		<result column="max_value" jdbcType="VARCHAR" property="maxValue" />
+		<result column="min_value" jdbcType="VARCHAR" property="minValue" />
+		<result column="decimal_digits" jdbcType="INTEGER" property="decimalDigits" />
+		<result column="regex_text" jdbcType="VARCHAR" property="regexText" />
+		<result column="error" jdbcType="VARCHAR" property="error" />
+		<result column="is_null" jdbcType="INTEGER" property="isNull" />
+	</resultMap>
+	<select id="findCollectRule" resultType="com.cloud.entity.datacollect.CollectRule">
+		SELECT * FROM
+		`collect_rule`
+	</select>
+	
+	<select id="findColDetail" resultType="com.cloud.entity.datacollect.CollectRule">
+		SELECT rul.* 
+			FROM collect_template temp 
+		LEFT JOIN collect_columns col ON col.template_id = temp.template_id
+		LEFT JOIN collect_rule rul ON rul.column_id = col.column_id
+		WHERE temp.template_name = #{template_name}
+	</select>
+	
+	
+	<select id="findColDetailTotal" resultType="java.lang.Integer">
+		SELECT count(*) as count
+			FROM collect_template temp 
+		LEFT JOIN collect_columns col ON col.template_id = temp.template_id
+		LEFT JOIN collect_rule rul ON rul.column_id = col.column_id
+		WHERE temp.template_name = #{template_name}
+	</select>
+	
+	
+	<update id="updateCollectRule" parameterType="com.cloud.entity.datacollect.CollectRule">
+        update collect_rule
+        <set>
+            <if test="columnId != null">
+                column_id = #{columnId,jdbcType=INTEGER},
+            </if>
+            <if test="ruleName != null">
+                rule_name = #{ruleName,jdbcType=VARCHAR},
+            </if>
+            <if test="keyWord != null">
+                key_word = #{keyWord,jdbcType=VARCHAR},
+            </if>
+            <if test="ruleType != null">
+                rule_type = #{ruleType,jdbcType=VARCHAR},
+            </if>
+            <if test="formatStr != null">
+                format_str = #{formatStr,jdbcType=VARCHAR},
+            </if>
+            <if test="minLength != null">
+                min_length = #{minLength,jdbcType=SMALLINT},
+            </if>
+            <if test="maxLength != null">
+                max_length = #{maxLength,jdbcType=SMALLINT},
+            </if>
+            <if test="maxValue != null">
+                max_value = #{maxValue,jdbcType=VARCHAR},
+            </if>
+            <if test="minValue != null">
+                min_value = #{minValue,jdbcType=VARCHAR},
+            </if>
+            <if test="decimalDigits != null">
+                decimal_digits = #{decimalDigits,jdbcType=SMALLINT},
+            </if>
+            <if test="regexText != null">
+                regex_text = #{regexText,jdbcType=VARCHAR},
+            </if>
+            <if test="error != null">
+                error = #{error,jdbcType=VARCHAR},
+            </if>
+             <if test="isNull != null">
+                is_null = #{isNull,jdbcType=SMALLINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteCollectRule" >
+    delete from collect_rule
+    where column_id = #{column_id,jdbcType=VARCHAR}
+   </delete>
+
+    <!-- 查询字段对应规则 -->
+    <select id="findRulesByTableName" resultType="java.util.Map">
+		SELECT
+			c.column_id,
+			b.column_en_name AS enColumn,
+			c.rule_name,
+			c.rule_type,
+			c.format_str,
+			c.min_length,
+			c.max_length,
+			c.max_value,
+			c.min_value,
+			c.decimal_digits,
+			c.regex_text,
+			c.error,
+			c.is_null
+		FROM
+			collect_template a
+			inner JOIN collect_columns b ON b.template_id = a.template_id
+			inner JOIN collect_rule c on c.column_id = b.column_id
+			AND b.template_id=c.template_id
+		WHERE 1 = 1
+			and a.temp_table_name = #{tempTableName,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 根据模板Id查询字段规则 -->
+	<select id="findRulesByRealTableName" resultType="java.util.Map">
+		SELECT
+			a.column_id,
+			a.column_en_name AS enColumn,
+			a.rule_name,
+			a.rule_type,
+			a.format_str,
+			a.min_length,
+			a.max_length,
+			a.max_value,
+			a.min_value,
+			a.decimal_digits,
+			a.regex_text,
+			a.error,
+			a.is_null
+		FROM
+			collect_rule a
+			where a.table_name = #{tableName}
+	</select>
+
+
+    <select id="findCollectColumns" resultType="com.cloud.entity.datacollect.CollectColumns">
+		SELECT
+            column_id AS columnId,
+            template_id AS templateId,
+            column_ch_name AS columnChName,
+            column_en_name AS columnEnName,
+            table_name AS tableName,
+            sort
+        FROM
+            `collect_columns`
+	</select>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.ProvinceCityMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.sys.ProvinceCity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="province_city" jdbcType="VARCHAR" property="provinceCity" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap" >
+      SELECT id,province,province_city FROM province_city;
+  </select>
+
+</mapper>

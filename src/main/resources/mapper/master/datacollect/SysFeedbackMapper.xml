@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.SysFeedbackMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollect.sysFeedback">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="rule_configuration_star" jdbcType="TINYINT" property="ruleConfigurationStar" />
+    <result column="rule_configuration_msg" jdbcType="VARCHAR" property="ruleConfigurationMsg" />
+    <result column="datasource_star" jdbcType="TINYINT" property="datasourceStar" />
+    <result column="datasource_msg" jdbcType="VARCHAR" property="datasourceMsg" />
+    <result column="presentation_star" jdbcType="TINYINT" property="presentationStar" />
+    <result column="presentation_msg" jdbcType="VARCHAR" property="presentationMsg" />
+    <result column="collection_data_star" jdbcType="TINYINT" property="collectionDataStar" />
+    <result column="collection_data_msg" jdbcType="VARCHAR" property="collectionDataMsg" />
+    <result column="other_msg" jdbcType="VARCHAR" property="otherMsg" />
+    <result column="reply" jdbcType="VARCHAR" property="reply" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, user_name, rule_configuration_star, rule_configuration_msg, datasource_star, 
+    datasource_msg, presentation_star, presentation_msg, collection_data_star, collection_data_msg, 
+    other_msg, reply
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_feedback
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_feedback
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datacollect.sysFeedback" useGeneratedKeys="true">
+    insert into sys_feedback (user_id, user_name, rule_configuration_star, 
+      rule_configuration_msg, datasource_star, datasource_msg, 
+      presentation_star, presentation_msg, collection_data_star, 
+      collection_data_msg, other_msg, reply
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{ruleConfigurationStar,jdbcType=TINYINT}, 
+      #{ruleConfigurationMsg,jdbcType=VARCHAR}, #{datasourceStar,jdbcType=TINYINT}, #{datasourceMsg,jdbcType=VARCHAR}, 
+      #{presentationStar,jdbcType=TINYINT}, #{presentationMsg,jdbcType=VARCHAR}, #{collectionDataStar,jdbcType=TINYINT}, 
+      #{collectionDataMsg,jdbcType=VARCHAR}, #{otherMsg,jdbcType=VARCHAR}, #{reply,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datacollect.sysFeedback" useGeneratedKeys="true">
+    insert into sys_feedback
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="ruleConfigurationStar != null">
+        rule_configuration_star,
+      </if>
+      <if test="ruleConfigurationMsg != null">
+        rule_configuration_msg,
+      </if>
+      <if test="datasourceStar != null">
+        datasource_star,
+      </if>
+      <if test="datasourceMsg != null">
+        datasource_msg,
+      </if>
+      <if test="presentationStar != null">
+        presentation_star,
+      </if>
+      <if test="presentationMsg != null">
+        presentation_msg,
+      </if>
+      <if test="collectionDataStar != null">
+        collection_data_star,
+      </if>
+      <if test="collectionDataMsg != null">
+        collection_data_msg,
+      </if>
+      <if test="otherMsg != null">
+        other_msg,
+      </if>
+      <if test="reply != null">
+        reply,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleConfigurationStar != null">
+        #{ruleConfigurationStar,jdbcType=TINYINT},
+      </if>
+      <if test="ruleConfigurationMsg != null">
+        #{ruleConfigurationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceStar != null">
+        #{datasourceStar,jdbcType=TINYINT},
+      </if>
+      <if test="datasourceMsg != null">
+        #{datasourceMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="presentationStar != null">
+        #{presentationStar,jdbcType=TINYINT},
+      </if>
+      <if test="presentationMsg != null">
+        #{presentationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionDataStar != null">
+        #{collectionDataStar,jdbcType=TINYINT},
+      </if>
+      <if test="collectionDataMsg != null">
+        #{collectionDataMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="otherMsg != null">
+        #{otherMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="reply != null">
+        #{reply,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollect.sysFeedback">
+    update sys_feedback
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleConfigurationStar != null">
+        rule_configuration_star = #{ruleConfigurationStar,jdbcType=TINYINT},
+      </if>
+      <if test="ruleConfigurationMsg != null">
+        rule_configuration_msg = #{ruleConfigurationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceStar != null">
+        datasource_star = #{datasourceStar,jdbcType=TINYINT},
+      </if>
+      <if test="datasourceMsg != null">
+        datasource_msg = #{datasourceMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="presentationStar != null">
+        presentation_star = #{presentationStar,jdbcType=TINYINT},
+      </if>
+      <if test="presentationMsg != null">
+        presentation_msg = #{presentationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionDataStar != null">
+        collection_data_star = #{collectionDataStar,jdbcType=TINYINT},
+      </if>
+      <if test="collectionDataMsg != null">
+        collection_data_msg = #{collectionDataMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="otherMsg != null">
+        other_msg = #{otherMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="reply != null">
+        reply = #{reply,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollect.sysFeedback">
+    update sys_feedback
+    set user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      rule_configuration_star = #{ruleConfigurationStar,jdbcType=TINYINT},
+      rule_configuration_msg = #{ruleConfigurationMsg,jdbcType=VARCHAR},
+      datasource_star = #{datasourceStar,jdbcType=TINYINT},
+      datasource_msg = #{datasourceMsg,jdbcType=VARCHAR},
+      presentation_star = #{presentationStar,jdbcType=TINYINT},
+      presentation_msg = #{presentationMsg,jdbcType=VARCHAR},
+      collection_data_star = #{collectionDataStar,jdbcType=TINYINT},
+      collection_data_msg = #{collectionDataMsg,jdbcType=VARCHAR},
+      other_msg = #{otherMsg,jdbcType=VARCHAR},
+      reply = #{reply,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_feedback
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>  
+  
+  <update id="updateSysFeedback" parameterType="com.cloud.entity.datacollect.sysFeedback">
+  	update sys_feedback
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleConfigurationStar != null">
+        rule_configuration_star = #{ruleConfigurationStar,jdbcType=TINYINT},
+      </if>
+      <if test="ruleConfigurationMsg != null">
+        rule_configuration_msg = #{ruleConfigurationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="datasourceStar != null">
+        datasource_star = #{datasourceStar,jdbcType=TINYINT},
+      </if>
+      <if test="datasourceMsg != null">
+        datasource_msg = #{datasourceMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="presentationStar != null">
+        presentation_star = #{presentationStar,jdbcType=TINYINT},
+      </if>
+      <if test="presentationMsg != null">
+        presentation_msg = #{presentationMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionDataStar != null">
+        collection_data_star = #{collectionDataStar,jdbcType=TINYINT},
+      </if>
+      <if test="collectionDataMsg != null">
+        collection_data_msg = #{collectionDataMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="otherMsg != null">
+        other_msg = #{otherMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="reply != null">
+        reply = #{reply,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

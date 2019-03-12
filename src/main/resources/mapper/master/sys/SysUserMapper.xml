@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.sys.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="job_number" jdbcType="VARCHAR" property="jobNumber" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="roleType" jdbcType="VARCHAR" property="roleType" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+  </resultMap>
+
+  <resultMap id="userInfo" extends="BaseResultMap" type="com.cloud.entity.sys.SysUser" >
+     <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+     <result column="orgType" jdbcType="VARCHAR" property="orgType"/>
+     <result column="orgCode" jdbcType="VARCHAR" property="orgCode"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, login_name, login_pwd, nick_name, job_number, mobile_phone, sex, `status`, role_id, 
+    org_id, salt, is_delete, login_time
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.sys.SysUser">
+    insert into sys_user (id, login_name, login_pwd, 
+      nick_name, job_number, mobile_phone, 
+      sex, `status`, role_id, 
+      org_id, salt, is_delete, login_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
+      #{nickName,jdbcType=VARCHAR}, #{jobNumber,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT}, 
+      #{orgId,jdbcType=BIGINT}, #{salt,jdbcType=VARCHAR}, #{isDelete,jdbcType=BIT}, #{loginTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.sys.SysUser">
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPwd != null">
+        login_pwd,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="jobNumber != null">
+        job_number,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="loginTime != null">
+        login_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobNumber != null">
+        #{jobNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="loginTime != null">
+        #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.sys.SysUser">
+    update sys_user
+    <set>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobNumber != null">
+        job_number = #{jobNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="salt != null">
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="loginTime != null">
+        login_time = #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.sys.SysUser">
+    update sys_user
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      job_number = #{jobNumber,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=BIGINT},
+      org_id = #{orgId,jdbcType=BIGINT},
+      salt = #{salt,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=BIT},
+      login_time = #{loginTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+     <!-- 根据登录名查询用户 -->
+  <select id="findByUsername" resultMap="userInfo">
+    SELECT u.*,r.role_name as roleName,o.type AS orgType ,o.code AS orgCode,r.role_type as roleType from sys_user u
+    LEFT JOIN sys_role r on u.role_id = r.id
+    LEFT JOIN org_info o ON u.org_id = o.id
+    WHERE u.login_name = #{username}
+    LIMIT 1
+  </select>
+  <!-- 查询该角色下是否有用户 -->
+  <select id="findUserByRoleId" resultType="int">
+    SELECT count(*) from sys_user where role_id=#{roleId} and is_delete!=1 
+  </select>
+
+  <select id="selectUserByOrgId" resultType="com.cloud.entity.sys.SysUser">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM sys_user
+    WHERE org_id = #{orgId}
+    LIMIT 1
+  </select>
+  
+   <!-- 查询用户列表 -->
+  <select id="findUserList" resultMap="BaseResultMap">
+     SELECT u.id,u.login_name,u.nick_name,u.job_number,u.mobile_phone,
+     u.org_id,u.role_id,u.sex,u.`status`,
+     o.name as orgName,o.number as orgNumber,
+     r.role_name as roleName,r.role_type as roleType 
+     FROM sys_user u LEFT JOIN org_info o ON u.org_id = o.id 
+     LEFT JOIN sys_role r ON  u.role_id=r.id
+     WHERE  is_delete=0  
+     <if test="loginName!=null and loginName!=''">
+       <bind name="loginName" value="'%' + loginName + '%'" />
+       AND (u.login_name like #{loginName}  or u.nick_name like #{loginName}) 
+     </if>
+     <if test="orgCode!=null and orgCode!='' ">
+       AND (o.code = #{orgCode} OR o.code LIKE CONCAT(#{orgCode},'D%'))
+     </if>
+     <if test="roleId!=null">
+       AND u.role_id = #{roleId}
+     </if>
+     <if test="status!=null">
+       AND u.status = #{status}
+     </if>
+  </select>
+  <!-- 验证用户名 -->
+  <select id="checkLoginName" resultMap="BaseResultMap">
+    SELECT * FROM sys_user WHERE login_name=#{loginName}
+  </select>
+   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT u.id,u.login_name,u.nick_name,u.job_number,u.mobile_phone,
+     u.org_id,u.role_id,u.sex,u.`status`,u.is_delete,u.login_time,
+     o.name as orgName,o.code as orgCode,o.type as orgType,
+     r.role_name as roleName,r.role_type as roleType
+     FROM sys_user u LEFT JOIN org_info o ON u.org_id = o.id 
+     LEFT JOIN sys_role r ON  u.role_id=r.id 
+     WHERE u.id = #{id} limit 1 
+  </select>
+  <select id="selectInfoById" resultMap="BaseResultMap">
+    select * from sys_user where id=#{id}
+  </select>
+</mapper>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.TableInfoMapper">
+	<resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.TableInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="table_name" jdbcType="VARCHAR" property="tableName" />
+		<result column="table_cn" jdbcType="VARCHAR" property="tableCn" />
+		<result column="field_num" jdbcType="INTEGER" property="fieldNum" />
+		<result column="empty_num" jdbcType="INTEGER" property="emptyNum" />
+		<result column="data_num" jdbcType="BIGINT" property="dataNum" />
+		<result column="data_space" jdbcType="VARCHAR" property="dataSpace" />
+		<result column="source_id" jdbcType="BIGINT" property="sourceId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, `table_name`, table_cn, field_num, empty_num, data_num, data_space,
+		source_id
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_table_info
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		DELETE FROM t_table_info
+		WHERE id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" keyColumn="id" keyProperty="id"
+		parameterType="com.cloud.entity.datamanagement.TableInfo"
+		useGeneratedKeys="true">
+		INSERT INTO t_table_info (`table_name`, table_cn, field_num, empty_num,
+		data_num, data_space, source_id
+		)
+		VALUES (#{tableName,jdbcType=VARCHAR}, #{tableCn,jdbcType=VARCHAR},
+		#{fieldNum,jdbcType=INTEGER},
+		#{emptyNum,jdbcType=INTEGER},
+		#{dataNum,jdbcType=BIGINT}, #{dataSpace,jdbcType=VARCHAR}, #{sourceId,jdbcType=BIGINT}
+		)
+	</insert>
+	<insert id="insertSelective" keyColumn="id" keyProperty="id"
+		parameterType="com.cloud.entity.datamanagement.TableInfo"
+		useGeneratedKeys="true">
+		insert into t_table_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tableName != null">
+				`table_name`,
+			</if>
+			<if test="tableCn != null">
+				table_cn,
+			</if>
+			<if test="fieldNum != null">
+				field_num,
+			</if>
+			<if test="emptyNum != null">
+				empty_num,
+			</if>
+			<if test="dataNum != null">
+				data_num,
+			</if>
+			<if test="dataSpace != null">
+				data_space,
+			</if>
+			<if test="sourceId != null">
+				source_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tableName != null">
+				#{tableName,jdbcType=VARCHAR},
+			</if>
+			<if test="tableCn != null">
+				#{tableCn,jdbcType=VARCHAR},
+			</if>
+			<if test="fieldNum != null">
+				#{fieldNum,jdbcType=INTEGER},
+			</if>
+			<if test="emptyNum != null">
+				#{emptyNum,jdbcType=INTEGER},
+			</if>
+			<if test="dataNum != null">
+				#{dataNum,jdbcType=BIGINT},
+			</if>
+			<if test="dataSpace != null">
+				#{dataSpace,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceId != null">
+				#{sourceId,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.TableInfo">
+		update t_table_info
+		<set>
+			<if test="tableName != null">
+				`table_name` = #{tableName,jdbcType=VARCHAR},
+			</if>
+			<if test="tableCn != null">
+				table_cn = #{tableCn,jdbcType=VARCHAR},
+			</if>
+			<if test="fieldNum != null">
+				field_num = #{fieldNum,jdbcType=INTEGER},
+			</if>
+			<if test="emptyNum != null">
+				empty_num = #{emptyNum,jdbcType=INTEGER},
+			</if>
+			<if test="dataNum != null">
+				data_num = #{dataNum,jdbcType=BIGINT},
+			</if>
+			<if test="dataSpace != null">
+				data_space = #{dataSpace,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceId != null">
+				source_id = #{sourceId,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.TableInfo">
+		UPDATE t_table_info
+		SET `table_name` = #{tableName,jdbcType=VARCHAR},
+		table_cn = #{tableCn,jdbcType=VARCHAR},
+		field_num = #{fieldNum,jdbcType=INTEGER},
+		empty_num = #{emptyNum,jdbcType=INTEGER},
+		data_num = #{dataNum,jdbcType=BIGINT},
+		data_space = #{dataSpace,jdbcType=VARCHAR},
+		source_id = #{sourceId,jdbcType=BIGINT}
+		WHERE id = #{id,jdbcType=BIGINT}
+	</update>
+
+
+	<select id="selectBySourceId" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_table_info t
+		WHERE t.source_id = #{sourceId}
+	</select>
+
+
+	<select id="getAllTablesByDataSourceId" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM t_table_info WHERE source_id in
+		(SELECT id FROM t_dbdatasource WHERE id = #{dataSourceId})
+		<if test="sort != null and sort == 1">
+			ORDER BY data_num DESC
+		</if>
+		<if test="sort != null and sort == 2">
+			ORDER BY data_num ASC
+		</if>
+	</select>
+
+	<select id="getTableRecord" resultType="com.cloud.entity.vo.qualityReport.TableInfoVo">
+		SELECT
+		(@row_number := @row_number + 1) AS num,
+		t.`table_name` AS tableName,
+		t.table_cn AS tableCn,
+		t.field_num AS fieldNum,
+		t.data_num AS dataNum,
+		t.empty_num AS emptyNum,
+		t.field_num - t.empty_num AS noEmptyNum,
+		t.data_space AS dataSpace,
+		t.source_id AS sourceId
+		FROM
+		t_table_info t,
+		(SELECT @row_number := 0) AS d
+		WHERE
+		t.source_id = #{id}
+		ORDER BY
+		data_num DESC
+	</select>
+	<delete id="deleteTableInfoBySourceId">
+		DELETE FROM t_table_info
+		WHERE source_id = #{id,jdbcType=BIGINT}
+	</delete>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.sys.CityMapper">
+<resultMap id="BaseResultMap" type="com.cloud.entity.sys.City">
+  <id column="id" jdbcType="BIGINT" property="id" />
+  <result column="name" jdbcType="VARCHAR" property="name" />
+  <result column="p_id" jdbcType="BIGINT" property="pId" />
+</resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, p_id
+  </sql>
+  <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_data
+    where id = #{id}
+  </select>
+
+  <!-- 根据省份ID查询所有城市 -->
+  <select id="selectCityByProvinceId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_data
+    where p_id = #{pid}
+  </select>
+
+</mapper>

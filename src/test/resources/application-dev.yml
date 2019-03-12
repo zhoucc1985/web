@@ -1,0 +1,64 @@
+#使用jasypt对数据源密码加密
+jasypt:
+  encryptor:
+    password: sumnemtsumnet   #类似于salt
+# master 数据源配置
+# password生成规则：在maven仓库中找到：D:\repository\org\jasypt\jasypt\1.9.2，这个包就是加密的包了，cmd在这个包下执行如下命令，它会返回你加密后的密码：
+# java -cp jasypt-1.9.2.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI input="Sunmnet@123" password=sumnemtsumnet algorithm=PBEWithMD5AndDES
+# input:是数据库的明文密码   password：是加密的盐  algorithm：是加密的方式(默认)
+master:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.21.11:3306/cloud_ias_dev?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: ENC(oTQLqpHGbbgYGGkQkOFjqYfBj3TyEmHx)
+# 临时库-数据源配置 用于存放临时表
+temp:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.21.11:3306/temp_collect_datas?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: ENC(oTQLqpHGbbgYGGkQkOFjqYfBj3TyEmHx)
+# 真实库-数据源配置
+real:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.21.11:3306/collect_datas?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: ENC(oTQLqpHGbbgYGGkQkOFjqYfBj3TyEmHx)
+# 系统云数据库-数据源配置
+cloud:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.21.11:3306/system_cloud?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: ENC(oTQLqpHGbbgYGGkQkOFjqYfBj3TyEmHx)
+server:
+    port: 9999
+spring:
+  # redis 缓存服务器配置
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 30
+    isRedisCache: 1 #是否使用redis 0:true,1:false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+# 上传文件临时保存目录
+data-collection-upload-file-path: ${user.home}/collectiondatatempfile
+# 上传学校logo图片地址
+org_school_logo_file_path: ${user.home}
+# 模板背景图地址
+report_template_img_path: ${user.home}/templateimg
+# 报告详情data.json存放位置
+report_detail_path: ${user.home}/report
+# Excel文件存放位置
+excelPath: ${user.home}/excel
+filepath:
+  # 模板下载根目录
+  downloadbashpath: ${user.home}/excel
+  #excel导入临时存放目录
+  uploadfiletemppath: ${user.home}/collectiondata/uploadtempfile
+bigdataserverpath: http://172.16.23.28:9988/web/action/TableData/getPushData

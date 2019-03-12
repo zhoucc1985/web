@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.FtpdatasourceMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.Ftpdatasource">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ftp_ip" jdbcType="VARCHAR" property="ftpIp"/>
+        <result column="ftp_port" jdbcType="VARCHAR" property="ftpPort"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="pass_word" jdbcType="VARCHAR" property="passWord"/>
+        <result column="is_connection" jdbcType="INTEGER" property="isConnection"/>
+        <result column="report_status" jdbcType="INTEGER" property="reportStatus"/>
+        <result column="modified_by" jdbcType="VARCHAR" property="modifiedBy"/>
+        <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime"/>
+        <result column="check_time" jdbcType="TIMESTAMP" property="checkTime"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="conn_type" jdbcType="VARCHAR" property="connType"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, ftp_ip, ftp_port, `path`, user_name, pass_word, is_connection, report_status,
+        modified_by, modified_time, check_time, remarks, `type`, status, conn_type
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_ftpdatasource
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <!--分页查询列表-->
+    <select id="queryPage" resultType="com.cloud.entity.datamanagement.Ftpdatasource">
+        SELECT
+        id AS id,
+        ftp_ip AS ftpIp,
+        ftp_port AS ftpPort,
+        path AS path,
+        user_name AS userName,
+        pass_word AS passWord,
+        is_connection AS isConnection,
+        report_status AS reportStatus,
+        modified_by AS modifiedBy,
+        modified_time AS modifiedTime,
+        check_time AS checkTime,
+        remarks AS remarks,
+        type AS type,
+        status AS status,
+        conn_type AS connType
+        FROM t_ftpdatasource
+        WHERE status = 1
+        <if test="path != null and path != ''">
+            AND path LIKE concat('%',#{path},'%')
+        </if>
+        <if test="ftpIp != null and ftpIp != ''">
+            AND ftp_ip LIKE concat('%',#{ftpIp},'%')
+        </if>
+        <if test="connection !=null">
+            and is_connection = #{connection}
+        </if>
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        <if test="startTime != null">
+            AND modified_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND modified_time &lt;= #{endTime}
+        </if>
+        <if test="orgId != null and orgId != ''">
+            AND (org_id = #{orgId} OR org_id LIKE CONCAT(#{orgId},'D%'))
+        </if>
+        order by modified_time desc
+    </select>
+
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.Ftpdatasource"
+            useGeneratedKeys="true">
+        INSERT INTO t_ftpdatasource (ftp_ip, ftp_port, `path`,
+                                     user_name, pass_word, is_connection,
+                                     report_status, modified_by, modified_time,
+                                     check_time, remarks, `type`, status, conn_type ,org_id
+        )
+        VALUES (#{ftpIp,jdbcType=VARCHAR}, #{ftpPort,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR},
+                                           #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR},
+                                           #{isConnection,jdbcType=INTEGER},
+                                           #{reportStatus,jdbcType=INTEGER}, #{modifiedBy,jdbcType=VARCHAR},
+                                           #{modifiedTime,jdbcType=TIMESTAMP},
+                                           #{checkTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR},
+                #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{connType,jdbcType=VARCHAR} , #{orgId,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.cloud.entity.datamanagement.Ftpdatasource" useGeneratedKeys="true">
+        insert into t_ftpdatasource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ftpIp != null">
+                ftp_ip,
+            </if>
+            <if test="ftpPort != null">
+                ftp_port,
+            </if>
+            <if test="path != null">
+                `path`,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="passWord != null">
+                pass_word,
+            </if>
+            <if test="isConnection != null">
+                is_connection,
+            </if>
+            <if test="reportStatus != null">
+                report_status,
+            </if>
+            <if test="modifiedBy != null and modifiedBy != '' ">
+                modified_by,
+            </if>
+            <if test="modifiedTime != null">
+                modified_time,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="connType != null">
+                conn_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ftpIp != null">
+                #{ftpIp,jdbcType=VARCHAR},
+            </if>
+            <if test="ftpPort != null">
+                #{ftpPort,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord != null">
+                #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="isConnection != null">
+                #{isConnection,jdbcType=INTEGER},
+            </if>
+            <if test="reportStatus != null">
+                #{reportStatus,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedBy != null and modifiedBy != ''">
+                #{modifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedTime != null">
+                #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="status != null ">
+                #{status,jdbcType=INTEGER}
+            </if>
+            <if test="connType != null ">
+                #{connType,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.Ftpdatasource">
+        update t_ftpdatasource
+        <set>
+            <if test="ftpIp != null">
+                ftp_ip = #{ftpIp,jdbcType=VARCHAR},
+            </if>
+            <if test="ftpPort != null">
+                ftp_port = #{ftpPort,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                `path` = #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="passWord != null">
+                pass_word = #{passWord,jdbcType=VARCHAR},
+            </if>
+            <if test="isConnection != null">
+                is_connection = #{isConnection,jdbcType=INTEGER},
+            </if>
+            <if test="reportStatus != null">
+                report_status = #{reportStatus,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedBy != null and modifiedBy != ''">
+                modified_by = #{modifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="connType != null">
+                conn_type = #{connType,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.Ftpdatasource">
+        UPDATE t_ftpdatasource
+        SET ftp_ip        = #{ftpIp,jdbcType=VARCHAR},
+            ftp_port      = #{ftpPort,jdbcType=VARCHAR},
+            `path`        = #{path,jdbcType=VARCHAR},
+            user_name     = #{userName,jdbcType=VARCHAR},
+            pass_word     = #{passWord,jdbcType=VARCHAR},
+            is_connection = #{isConnection,jdbcType=INTEGER},
+            modified_by   = #{modifiedBy,jdbcType=VARCHAR},
+            modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+            remarks       = #{remarks,jdbcType=VARCHAR},
+            conn_type     = #{connType,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--修改报告状态-->
+    <update id="updateStatus">
+        UPDATE t_ftpdatasource
+        SET report_status = 1
+        WHERE id = #{ftpId}
+    </update>
+
+    <!--删除数据源-->
+    <update id="changeStatus">
+        UPDATE t_ftpdatasource
+        SET status = -1
+        WHERE id = #{ftpId}
+    </update>
+
+    <select id="selectIncrId" resultType="java.lang.Long">
+        SELECT @@IDENTITY;
+    </select>
+
+    <!--查询出所有的列表-->
+    <select id="select" resultType="com.cloud.entity.datamanagement.Ftpdatasource">
+        SELECT
+            id            AS id,
+            ftp_ip        AS ftpIp,
+            ftp_port      AS ftpPort,
+            `path`        AS path,
+            user_name     AS userName,
+            pass_word     AS passWord,
+            is_connection AS isConnection,
+            report_status AS reportStatus,
+            modified_by   AS modifiedBy,
+            modified_time AS modifiedTime,
+            check_time    AS checkTime,
+            remarks       AS remarks,
+            `type`        AS type,
+            `status`      AS status,
+            conn_type     AS connType
+        FROM t_ftpdatasource
+    </select>
+</mapper>

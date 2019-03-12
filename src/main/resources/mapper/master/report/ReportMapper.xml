@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.report.ReportMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.report.Report">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="batch_id" jdbcType="BIGINT" property="batchId"/>
+        <result column="generate_number" jdbcType="INTEGER" property="generateNumber"/>
+        <result column="generate_status" jdbcType="VARCHAR" property="generateStatus"/>
+        <result column="generate_again" jdbcType="TINYINT" property="generateAgain"/>
+        <result column="generate_time" jdbcType="TIMESTAMP" property="generateTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="rt_id" jdbcType="BIGINT" property="rtId"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="report_link" jdbcType="VARCHAR" property="reportLink"/>
+        <result column="visit_count" jdbcType="INTEGER" property="visitCount"/>
+        <result column="school_logo_path" jdbcType="VARCHAR" property="schoolLogoPath"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, batch_id, generate_number, generate_status, generate_again, generate_time,
+        remark, rt_id, org_id, report_link, visit_count,school_logo_path
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from report
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM report
+        WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.Report"
+            useGeneratedKeys="true">
+        INSERT INTO report ( batch_id, generate_number,
+                            generate_status, generate_again, generate_time,
+                            remark, rt_id, org_id,
+                            report_link, visit_count,school_logo_path)
+        VALUES (#{batchId,jdbcType=BIGINT}, #{generateNumber,jdbcType=INTEGER},
+                                          #{generateStatus,jdbcType=VARCHAR}, #{generateAgain,jdbcType=TINYINT},
+                                          #{generateTime,jdbcType=TIMESTAMP},
+                                          #{remark,jdbcType=VARCHAR}, #{rtId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT},
+                                          #{reportLink,jdbcType=VARCHAR}, #{visitCount,jdbcType=INTEGER},#{schoolLogoPath})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.report.Report"
+            useGeneratedKeys="true">
+        insert into report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="batchId != null">
+                batch_id,
+            </if>
+            <if test="generateNumber != null">
+                generate_number,
+            </if>
+            <if test="generateStatus != null">
+                generate_status,
+            </if>
+            <if test="generateAgain != null">
+                generate_again,
+            </if>
+            <if test="generateTime != null">
+                generate_time,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="rtId != null">
+                rt_id,
+            </if>
+            <if test="orgId != null">
+                org_id,
+            </if>
+            <if test="reportLink != null">
+                report_link,
+            </if>
+            <if test="visitCount != null">
+                visit_count,
+            </if>
+            <if test="schoolLogoPath != null">
+                school_logo_path,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="batchId != null">
+                #{batchId,jdbcType=BIGINT},
+            </if>
+            <if test="generateNumber != null">
+                #{generateNumber,jdbcType=INTEGER},
+            </if>
+            <if test="generateStatus != null">
+                #{generateStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="generateAgain != null">
+                #{generateAgain,jdbcType=TINYINT},
+            </if>
+            <if test="generateTime != null">
+                #{generateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="rtId != null">
+                #{rtId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="reportLink != null">
+                #{reportLink,jdbcType=VARCHAR},
+            </if>
+            <if test="visitCount != null">
+                #{visitCount,jdbcType=INTEGER},
+            </if>
+            <if test="schoolLogoPath != null">
+                #{schoolLogoPath,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.report.Report">
+        update report
+        <set>
+            <if test="batchId != null">
+                batch_id = #{batchId,jdbcType=BIGINT},
+            </if>
+            <if test="generateNumber != null">
+                generate_number = #{generateNumber,jdbcType=INTEGER},
+            </if>
+            <if test="generateStatus != null">
+                generate_status = #{generateStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="generateAgain != null">
+                generate_again = #{generateAgain,jdbcType=TINYINT},
+            </if>
+            <if test="generateTime != null">
+                generate_time = #{generateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="rtId != null">
+                rt_id = #{rtId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId != null">
+                org_id = #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="reportLink != null">
+                report_link = #{reportLink,jdbcType=VARCHAR},
+            </if>
+            <if test="visitCount != null">
+                visit_count = #{visitCount,jdbcType=INTEGER},
+            </if>
+            <if test="schoolLogoPath != null">
+                school_logo_path = #{schoolLogoPath,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.report.Report">
+        UPDATE report
+        SET
+            batch_id        = #{batchId,jdbcType=BIGINT},
+            generate_number = #{generateNumber,jdbcType=INTEGER},
+            generate_status = #{generateStatus,jdbcType=VARCHAR},
+            generate_again  = #{generateAgain,jdbcType=TINYINT},
+            generate_time   = #{generateTime,jdbcType=TIMESTAMP},
+            remark          = #{remark,jdbcType=VARCHAR},
+            rt_id           = #{rtId,jdbcType=BIGINT},
+            org_id          = #{orgId,jdbcType=BIGINT},
+            report_link     = #{reportLink,jdbcType=VARCHAR},
+            visit_count     = #{visitCount,jdbcType=INTEGER},
+        school_logo_path    = #{schoolLogoPath,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <resultMap id="extendResultMap" extends="BaseResultMap" type="com.cloud.common.vo.report.ReportVo">
+        <result column="repName" property="repName"/>
+        <result column="batchNo" property="batchNo"/>
+        <result column="schoolCode" property="schoolCode"/>
+        <result column="schoolName" property="schoolName"/>
+    </resultMap>
+    <!-- 根据查询条件获取分页数据 -->
+    <select id="queryPage" resultMap="extendResultMap">
+        SELECT r.*,c.report_name AS repName,c.batch_no AS batchNo,o.number AS schoolCode,o.name AS schoolName
+        FROM report r
+            LEFT JOIN org_info o ON r.org_id = o.id
+            LEFT JOIN collection_batch c ON r.batch_id = c.id
+        WHERE (o.code = #{orgCode} OR o.code LIKE CONCAT(#{orgCode}, 'D%'))
+        <if test="startTime != null">
+            AND r.generate_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND r.generate_time &lt;= #{endTime}
+        </if>
+        <if test="status != null and status != ''">
+            AND r.generate_status = #{status}
+        </if>
+        <if test="keyword != null and status != ''">
+            AND c.report_name LIKE CONCAT('%',#{keyword},'%')
+        </if>
+        ORDER BY r.generate_time DESC
+    </select>
+
+    <!-- 根据ID查询报告详情 -->
+    <select id="getReportDetailById" resultType="com.cloud.common.vo.report.ReportDetailVo">
+        SELECT
+          attr.name,v.value
+        FROM report_detail_attribute attr
+        JOIN report_detail_value v ON attr.id = v.report_detail_attribute_id
+        WHERE v.report_id = #{reportId}
+    </select>
+
+    <!-- 更新报告状态 -->
+    <update id="updateStatus">
+        UPDATE report
+        SET generate_status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID更新报告访问次数 -->
+    <update id="updateVisitCountById">
+        UPDATE
+            report
+        SET visit_count = #{count}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据报告ID修改报告是否可以再次生成状态 -->
+    <update id="updateGenerateAgainById">
+        UPDATE
+            report
+        SET generate_again = #{againStatus}
+        WHERE id = #{id}
+    </update>
+</mapper>

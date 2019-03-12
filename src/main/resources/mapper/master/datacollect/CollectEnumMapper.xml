@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.CollectEnumMapper">
+    <select id="fineEnumsBySystemNameAndLevelName" resultType="com.cloud.entity.datacollect.CollectEnum">
+      SELECT
+            id,
+            type,
+            name,
+            `value`,
+            parent_id AS parentId
+    FROM collect_enum
+    WHERE TYPE = #{levelName,jdbcType=VARCHAR}
+    AND parent_id IN (
+         SELECT id FROM collect_enum WHERE NAME=#{systemName,jdbcType=VARCHAR}
+    )
+    </select>
+    <!--查询枚举表-->
+    <select id="selectCollectEnum" resultType="com.cloud.entity.datacollect.CollectEnum">
+        SELECT
+            id,
+            type,
+            name,
+            `value`,
+            parent_id AS parentId
+        FROM collect_enum
+    </select>
+
+    <!--查询第一类型的名字-->
+    <select id="selectEnumFirst" resultType="java.lang.String">
+        SELECT `name`
+        FROM collect_enum
+        WHERE type = '业务系统分类' AND parent_id = #{parentId} AND `value` = #{firstTypeCode}
+    </select>
+
+    <!--查询第二类型的名字-->
+    <select id="selectEnumSecond" resultType="java.lang.String">
+        SELECT `name`
+        FROM collect_enum
+        WHERE type = '子分类' AND `value` = #{secondTypeCode}
+    </select>
+</mapper>

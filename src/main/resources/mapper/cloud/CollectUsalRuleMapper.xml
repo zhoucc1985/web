@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.datacollect.CollectUsalRuleMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.cloud.CollectUsalRule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+    <result column="rule_type" jdbcType="INTEGER" property="ruleType" />
+    <result column="format_str" jdbcType="VARCHAR" property="formatStr" />
+    <result column="min_length" jdbcType="SMALLINT" property="minLength" />
+    <result column="max_length" jdbcType="SMALLINT" property="maxLength" />
+    <result column="max_value" jdbcType="VARCHAR" property="maxValue" />
+    <result column="min_value" jdbcType="VARCHAR" property="minValue" />
+    <result column="decimal_digits" jdbcType="SMALLINT" property="decimalDigits" />
+    <result column="regex_text" jdbcType="VARCHAR" property="regexText" />
+    <result column="error" jdbcType="VARCHAR" property="error" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rule_name, rule_type, format_str, min_length, max_length, max_value, min_value, 
+    decimal_digits, regex_text, error
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from collect_usal_rule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collect_usal_rule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.cloud.CollectUsalRule" useGeneratedKeys="true">
+    insert into collect_usal_rule (rule_name, rule_type, format_str, 
+      min_length, max_length, max_value, 
+      min_value, decimal_digits, regex_text, 
+      error)
+    values (#{ruleName,jdbcType=VARCHAR}, #{ruleType,jdbcType=INTEGER}, #{formatStr,jdbcType=VARCHAR}, 
+      #{minLength,jdbcType=SMALLINT}, #{maxLength,jdbcType=SMALLINT}, #{maxValue,jdbcType=VARCHAR}, 
+      #{minValue,jdbcType=VARCHAR}, #{decimalDigits,jdbcType=SMALLINT}, #{regexText,jdbcType=VARCHAR}, 
+      #{error,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.cloud.CollectUsalRule" useGeneratedKeys="true">
+    insert into collect_usal_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ruleName != null">
+        rule_name,
+      </if>
+      <if test="ruleType != null">
+        rule_type,
+      </if>
+      <if test="formatStr != null">
+        format_str,
+      </if>
+      <if test="minLength != null">
+        min_length,
+      </if>
+      <if test="maxLength != null">
+        max_length,
+      </if>
+      <if test="maxValue != null">
+        max_value,
+      </if>
+      <if test="minValue != null">
+        min_value,
+      </if>
+      <if test="decimalDigits != null">
+        decimal_digits,
+      </if>
+      <if test="regexText != null">
+        regex_text,
+      </if>
+      <if test="error != null">
+        error,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="ruleName != null">
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null">
+        #{ruleType,jdbcType=INTEGER},
+      </if>
+      <if test="formatStr != null">
+        #{formatStr,jdbcType=VARCHAR},
+      </if>
+      <if test="minLength != null">
+        #{minLength,jdbcType=SMALLINT},
+      </if>
+      <if test="maxLength != null">
+        #{maxLength,jdbcType=SMALLINT},
+      </if>
+      <if test="maxValue != null">
+        #{maxValue,jdbcType=VARCHAR},
+      </if>
+      <if test="minValue != null">
+        #{minValue,jdbcType=VARCHAR},
+      </if>
+      <if test="decimalDigits != null">
+        #{decimalDigits,jdbcType=SMALLINT},
+      </if>
+      <if test="regexText != null">
+        #{regexText,jdbcType=VARCHAR},
+      </if>
+      <if test="error != null">
+        #{error,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.cloud.CollectUsalRule">
+    update collect_usal_rule
+    <set>
+      <if test="ruleName != null">
+        rule_name = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleType != null">
+        rule_type = #{ruleType,jdbcType=INTEGER},
+      </if>
+      <if test="formatStr != null">
+        format_str = #{formatStr,jdbcType=VARCHAR},
+      </if>
+      <if test="minLength != null">
+        min_length = #{minLength,jdbcType=SMALLINT},
+      </if>
+      <if test="maxLength != null">
+        max_length = #{maxLength,jdbcType=SMALLINT},
+      </if>
+      <if test="maxValue != null">
+        max_value = #{maxValue,jdbcType=VARCHAR},
+      </if>
+      <if test="minValue != null">
+        min_value = #{minValue,jdbcType=VARCHAR},
+      </if>
+      <if test="decimalDigits != null">
+        decimal_digits = #{decimalDigits,jdbcType=SMALLINT},
+      </if>
+      <if test="regexText != null">
+        regex_text = #{regexText,jdbcType=VARCHAR},
+      </if>
+      <if test="error != null">
+        error = #{error,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.cloud.CollectUsalRule">
+    update collect_usal_rule
+    set rule_name = #{ruleName,jdbcType=VARCHAR},
+      rule_type = #{ruleType,jdbcType=INTEGER},
+      format_str = #{formatStr,jdbcType=VARCHAR},
+      min_length = #{minLength,jdbcType=SMALLINT},
+      max_length = #{maxLength,jdbcType=SMALLINT},
+      max_value = #{maxValue,jdbcType=VARCHAR},
+      min_value = #{minValue,jdbcType=VARCHAR},
+      decimal_digits = #{decimalDigits,jdbcType=SMALLINT},
+      regex_text = #{regexText,jdbcType=VARCHAR},
+      error = #{error,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datamanagement.TableStatMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datamanagement.TableStat">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="source_id" jdbcType="BIGINT" property="sourceId" />
+    <result column="table_num" jdbcType="INTEGER" property="tableNum" />
+    <result column="empty_num" jdbcType="INTEGER" property="emptyNum" />
+    <result column="noempty_num" jdbcType="INTEGER" property="noemptyNum" />
+    <result column="space" jdbcType="VARCHAR" property="space" />
+    <result column="rate" jdbcType="VARCHAR" property="rate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, source_id, table_num, empty_num, noempty_num, `space`, rate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_table_stat
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_table_stat
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.TableStat" useGeneratedKeys="true">
+    insert into t_table_stat (source_id, table_num, empty_num,
+                              noempty_num, `space`, rate
+    )
+    values (#{sourceId,jdbcType=BIGINT}, #{tableNum,jdbcType=INTEGER}, #{emptyNum,jdbcType=INTEGER},
+            #{noemptyNum,jdbcType=INTEGER}, #{space,jdbcType=VARCHAR}, #{rate,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.cloud.entity.datamanagement.TableStat" useGeneratedKeys="true">
+    insert into t_table_stat
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sourceId != null">
+        source_id,
+      </if>
+      <if test="tableNum != null">
+        table_num,
+      </if>
+      <if test="emptyNum != null">
+        empty_num,
+      </if>
+      <if test="noemptyNum != null">
+        noempty_num,
+      </if>
+      <if test="space != null">
+        `space`,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sourceId != null">
+        #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="tableNum != null">
+        #{tableNum,jdbcType=INTEGER},
+      </if>
+      <if test="emptyNum != null">
+        #{emptyNum,jdbcType=INTEGER},
+      </if>
+      <if test="noemptyNum != null">
+        #{noemptyNum,jdbcType=INTEGER},
+      </if>
+      <if test="space != null">
+        #{space,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datamanagement.TableStat">
+    update t_table_stat
+    <set>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=BIGINT},
+      </if>
+      <if test="tableNum != null">
+        table_num = #{tableNum,jdbcType=INTEGER},
+      </if>
+      <if test="emptyNum != null">
+        empty_num = #{emptyNum,jdbcType=INTEGER},
+      </if>
+      <if test="noemptyNum != null">
+        noempty_num = #{noemptyNum,jdbcType=INTEGER},
+      </if>
+      <if test="space != null">
+        `space` = #{space,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datamanagement.TableStat">
+    update t_table_stat
+    set source_id = #{sourceId,jdbcType=BIGINT},
+      table_num = #{tableNum,jdbcType=INTEGER},
+      empty_num = #{emptyNum,jdbcType=INTEGER},
+      noempty_num = #{noemptyNum,jdbcType=INTEGER},
+      `space` = #{space,jdbcType=VARCHAR},
+      rate = #{rate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="getDbQualityReport" parameterType="String" resultMap="DbQualityReportVoMap">
+    SELECT s.*,d.check_time,d.system_name,d.report_status,d.id as dataSourceId FROM t_dbdatasource d LEFT JOIN t_table_stat s ON s.source_id = d.id
+    where d.status != -1 
+    <if test="orgId != null and orgId != ''">
+            AND (d.org_id = #{orgId} OR d.org_id LIKE CONCAT(#{orgId},'D%'))
+    </if>
+    ORDER BY d.report_status
+  </select>
+
+  <select id="findEmptyTableList" resultType="java.util.Map">
+    SELECT
+        (@row_number:=@row_number + 1) as xh,
+        b.table_name,
+        b.table_cn
+    FROM
+        t_dbdatasource a
+    LEFT JOIN t_table_info b on b.source_id = a.id,
+    (SELECT @row_number:=0) AS t
+    WHERE b.data_num = 0
+    and a.id = #{id}
+    ORDER BY xh
+  </select>
+
+  <resultMap id="DbQualityReportVoMap" type="com.cloud.entity.vo.qualityReport.DbQualityReportVo">
+    <result column="id" property="id" />
+    <result column="dataSourceId" property="dataSourceId" />
+    <result column="system_name" property="systemName" />
+    <result column="report_status" property="reportStatus" />
+    <result column="check_time" property="checkTime" />
+    <result column="table_num" jdbcType="INTEGER" property="tableNum" />
+    <result column="empty_num" jdbcType="INTEGER" property="emptyNum" />
+    <result column="noempty_num" jdbcType="INTEGER" property="noemptyNum" />
+    <result column="space" jdbcType="VARCHAR" property="space" />
+    <result column="rate" jdbcType="VARCHAR" property="rate" />
+  </resultMap>
+  <delete id="deleteTableStatBySourceId">
+ 	delete from t_table_stat
+    where source_id = #{id,jdbcType=BIGINT}
+  </delete>
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollection.ReportTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollection.ReportTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="logo_patch" jdbcType="VARCHAR" property="logoPatch" />
+    <result column="bgm_path" jdbcType="VARCHAR" property="bgmPath" />
+    <result column="logo_remark" jdbcType="VARCHAR" property="logoRemark" />
+    <result column="default_template" jdbcType="TINYINT" property="defaultTemplate" javaType="java.lang.Boolean"/>
+  </resultMap>
+  <!--模板列表返回值-->
+  <resultMap id="ReportTemplateListResultMap" type="com.cloud.entity.datacollection.ReportTemplate" extends="BaseResultMap">
+    <association property="coverImgPath" column="id" select="findTemplateFirstPageImg"/>
+  </resultMap>
+  <!--模板详情返回值-->
+  <resultMap id="ReportTemplateInfoResultMap" type="com.cloud.entity.datacollection.ReportTemplate" extends="BaseResultMap">
+    <association property="pages" column="id" select="com.cloud.mapper.master.datacollection.ReportTemplatePageMapper.findByReportTemplateId"/>
+    <association property="fields" column="id" select="com.cloud.mapper.master.datacollection.ReportTemplatePageFieldMapper.findByReportTemplateId"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, logo_patch, bgm_path, logo_remark,default_template
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from report_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from report_template
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.datacollection.ReportTemplate">
+    insert into report_template (id, `name`, logo_patch, 
+      bgm_path, logo_remark,default_template)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{logoPatch,jdbcType=VARCHAR}, 
+      #{bgmPath,jdbcType=VARCHAR}, #{logoRemark,jdbcType=VARCHAR},#{defaultTemplate,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.datacollection.ReportTemplate" useGeneratedKeys="true" keyProperty="id">
+    insert into report_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="logoPatch != null">
+        logo_patch,
+      </if>
+      <if test="bgmPath != null">
+        bgm_path,
+      </if>
+      <if test="logoRemark != null">
+        logo_remark,
+      </if>
+      <if test="defaultTemplate != null">
+        default_template,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="logoPatch != null">
+        #{logoPatch,jdbcType=VARCHAR},
+      </if>
+      <if test="bgmPath != null">
+        #{bgmPath,jdbcType=VARCHAR},
+      </if>
+      <if test="logoRemark != null">
+        #{logoRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultTemplate != null">
+        #{defaultTemplate,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollection.ReportTemplate">
+    update report_template
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="logoPatch != null">
+        logo_patch = #{logoPatch,jdbcType=VARCHAR},
+      </if>
+      <if test="bgmPath != null">
+        bgm_path = #{bgmPath,jdbcType=VARCHAR},
+      </if>
+      <if test="logoRemark != null">
+        logo_remark = #{logoRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultTemplate != null">
+        default_template = #{defaultTemlate,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollection.ReportTemplate">
+    update report_template
+    set `name` = #{name,jdbcType=VARCHAR},
+      logo_patch = #{logoPatch,jdbcType=VARCHAR},
+      bgm_path = #{bgmPath,jdbcType=VARCHAR},
+      logo_remark = #{logoRemark,jdbcType=VARCHAR},
+      default_template = #{defaultTemplate,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--根据模板ID查询模板第一个页面的页面快照作为模板封面-->
+  <select id="findTemplateFirstPageImg" resultType="java.lang.String">
+    select page.page_snap_path as cover_img_path from report_template_page page where page.rt_id=#{id} limit 1
+  </select>
+  <!--查询报告模板列表-->
+  <select id="findReportTemplateList" resultMap="ReportTemplateListResultMap">
+    select * from report_template
+  </select>
+  <!--查询报告模板详情-->
+  <select id="findReportTemplateInfo" resultMap="ReportTemplateInfoResultMap">
+    select * from report_template where id=#{reportTemplateId}
+  </select>
+</mapper>

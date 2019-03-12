@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollection.CollectionDataSourceMapper">
+  <resultMap id="BaseResultMap" type="com.cloud.entity.datacollection.CollectionDataSource">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="age" jdbcType="VARCHAR" property="age" />
+    <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+    <result column="birth_date" jdbcType="VARCHAR" property="birthDate" />
+    <result column="birth_province" jdbcType="VARCHAR" property="birthProvince" />
+    <result column="birth_city" jdbcType="VARCHAR" property="birthCity" />
+    <result column="college_name" jdbcType="VARCHAR" property="collegeName" />
+    <result column="profession_name" jdbcType="VARCHAR" property="professionName" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="constellation" jdbcType="VARCHAR" property="constellation" />
+    <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="batch_id" jdbcType="BIGINT" property="batchId" />
+    <result column="is_error" jdbcType="TINYINT" property="isError" javaType="java.lang.Boolean"/>
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" javaType="java.lang.String" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cloud.entity.datacollection.CollectionDataSource">
+    <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, student_no, `name`, sex, age, idcard, birth_date, birth_province, birth_city,
+    college_name, profession_name, org_id, constellation, score, batch_id, is_error,
+    org_code
+  </sql>
+  <sql id="Blob_Column_List">
+    error_msg
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from collection_data_source
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from collection_data_source
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cloud.entity.datacollection.CollectionDataSource">
+    insert into collection_data_source (id, student_no, `name`,
+      sex, age, idcard, birth_date,
+      birth_province, birth_city, college_name,
+      profession_name, org_id, constellation,
+      score, batch_id, is_error,
+      org_code, error_msg)
+    values (#{id,jdbcType=BIGINT}, #{studentNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{sex,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, #{birthDate,jdbcType=VARCHAR},
+      #{birthProvince,jdbcType=VARCHAR}, #{birthCity,jdbcType=VARCHAR}, #{collegeName,jdbcType=VARCHAR},
+      #{professionName,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT}, #{constellation,jdbcType=VARCHAR},
+      #{score,jdbcType=VARCHAR}, #{batchId,jdbcType=BIGINT}, #{isError,jdbcType=TINYINT},
+      #{orgCode,jdbcType=VARCHAR}, #{errorMsg,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cloud.entity.datacollection.CollectionDataSource">
+    insert into collection_data_source
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="studentNo != null">
+        student_no,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="idcard != null">
+        idcard,
+      </if>
+      <if test="birthDate != null">
+        birth_date,
+      </if>
+      <if test="birthProvince != null">
+        birth_province,
+      </if>
+      <if test="birthCity != null">
+        birth_city,
+      </if>
+      <if test="collegeName != null">
+        college_name,
+      </if>
+      <if test="professionName != null">
+        profession_name,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="constellation != null">
+        constellation,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="isError != null">
+        is_error,
+      </if>
+      <if test="orgCode != null">
+        org_code,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="studentNo != null">
+        #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null">
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null">
+        #{birthDate,jdbcType=VARCHAR},
+      </if>
+      <if test="birthProvince != null">
+        #{birthProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="birthCity != null">
+        #{birthCity,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null">
+        #{collegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="professionName != null">
+        #{professionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="constellation != null">
+        #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=BIGINT},
+      </if>
+      <if test="isError != null">
+        #{isError,jdbcType=TINYINT},
+      </if>
+      <if test="orgCode != null">
+        #{orgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollection.CollectionDataSource">
+    update collection_data_source
+    <set>
+      <if test="studentNo != null">
+        student_no = #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=VARCHAR},
+      </if>
+      <if test="idcard != null">
+        idcard = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="birthDate != null">
+        birth_date = #{birthDate,jdbcType=VARCHAR},
+      </if>
+      <if test="birthProvince != null">
+        birth_province = #{birthProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="birthCity != null">
+        birth_city = #{birthCity,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null">
+        college_name = #{collegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="professionName != null">
+        profession_name = #{professionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="constellation != null">
+        constellation = #{constellation,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=BIGINT},
+      </if>
+      <if test="isError != null">
+        is_error = #{isError,jdbcType=TINYINT},
+      </if>
+      <if test="orgCode != null">
+        org_code = #{orgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cloud.entity.datacollection.CollectionDataSource">
+    update collection_data_source
+    set student_no = #{studentNo,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      age = #{age,jdbcType=VARCHAR},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      birth_date = #{birthDate,jdbcType=VARCHAR},
+      birth_province = #{birthProvince,jdbcType=VARCHAR},
+      birth_city = #{birthCity,jdbcType=VARCHAR},
+      college_name = #{collegeName,jdbcType=VARCHAR},
+      profession_name = #{professionName,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=BIGINT},
+      constellation = #{constellation,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      batch_id = #{batchId,jdbcType=BIGINT},
+      is_error = #{isError,jdbcType=TINYINT},
+      org_code = #{orgCode,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollection.CollectionDataSource">
+    update collection_data_source
+    set student_no = #{studentNo,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      age = #{age,jdbcType=VARCHAR},
+      idcard = #{idcard,jdbcType=VARCHAR},
+      birth_date = #{birthDate,jdbcType=VARCHAR},
+      birth_province = #{birthProvince,jdbcType=VARCHAR},
+      birth_city = #{birthCity,jdbcType=VARCHAR},
+      college_name = #{collegeName,jdbcType=VARCHAR},
+      profession_name = #{professionName,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=BIGINT},
+      constellation = #{constellation,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      batch_id = #{batchId,jdbcType=BIGINT},
+      is_error = #{isError,jdbcType=TINYINT},
+      org_code = #{orgCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 导入字段 -->
+  <sql id="Import_Column_List">
+  student_no, `name`, sex, age, idcard, birth_date, birth_province, birth_city,
+  college_name, profession_name, org_id, constellation, score, batch_id, is_error,org_code,error_msg
+</sql>
+  <!--批量插入，如果已经存在学号与学校一样的则更新，否则添加-->
+  <insert id="insertOrUpdateSourceByBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into collection_data_source(
+    <include refid="Import_Column_List"></include>
+    )VALUES
+    <foreach collection ="list" item="collectionDataSource" index= "index" separator =",">
+      (
+      #{collectionDataSource.studentNo}, #{collectionDataSource.name}, #{collectionDataSource.sex},
+      #{collectionDataSource.age}, #{collectionDataSource.idcard}, #{collectionDataSource.birthDate},
+      #{collectionDataSource.birthProvince}, #{collectionDataSource.birthCity},
+      #{collectionDataSource.collegeName},#{collectionDataSource.professionName},
+      #{collectionDataSource.orgId}, #{collectionDataSource.constellation},
+      #{collectionDataSource.score}, #{collectionDataSource.batchId},
+      #{collectionDataSource.isError},#{collectionDataSource.orgCode},#{collectionDataSource.errorMsg}
+      )
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    sex = VALUES(sex),`name` = VALUES (`name`),age = VALUES (age),idcard = VALUES (idcard),
+    birth_date = VALUES (birth_date),birth_province = VALUES (birth_province),
+    birth_city = VALUES (birth_city),
+    college_name = VALUES (college_name),profession_name = VALUES (profession_name),org_id = VALUES (org_id),
+    constellation = VALUES (constellation),score = VALUES (score),batch_id = VALUES (batch_id),
+    is_error = VALUES (is_error),org_code = VALUES (org_code),error_msg = VALUES (error_msg)
+  </insert>
+  <!--批量插入，如果已经存在学号与学校一样的则更新，否则添加 不返回ID-->
+  <insert id="insertOrUpdateSourceByBatchNoReturnId" parameterType="java.util.List">
+    insert into collection_data_source(
+    <include refid="Import_Column_List"></include>
+    )VALUES
+    <foreach collection ="list" item="collectionDataSource" index= "index" separator =",">
+      (
+      #{collectionDataSource.studentNo}, #{collectionDataSource.name}, #{collectionDataSource.sex},
+      #{collectionDataSource.age}, #{collectionDataSource.idcard}, #{collectionDataSource.birthDate},
+      #{collectionDataSource.birthProvince}, #{collectionDataSource.birthCity},
+      #{collectionDataSource.collegeName},#{collectionDataSource.professionName},
+      #{collectionDataSource.orgId}, #{collectionDataSource.constellation},
+      #{collectionDataSource.score}, #{collectionDataSource.batchId},
+      #{collectionDataSource.isError},#{collectionDataSource.orgCode},#{collectionDataSource.errorMsg}
+      )
+    </foreach>
+    ON DUPLICATE KEY UPDATE
+    sex = VALUES(sex),`name` = VALUES (`name`),age = VALUES (age),idcard = VALUES (idcard),
+    birth_date = VALUES (birth_date),birth_province = VALUES (birth_province),
+    birth_city = VALUES (birth_city),
+    college_name = VALUES (college_name),profession_name = VALUES (profession_name),org_id = VALUES (org_id),
+    constellation = VALUES (constellation),score = VALUES (score),batch_id = VALUES (batch_id),
+    is_error = VALUES (is_error),org_code = VALUES (org_code),error_msg = VALUES (error_msg)
+  </insert>
+  <!--批量删除没有错误的原始数据根据ID-->
+  <delete id="batchDelSourceById">
+    delete from collection_data_source where id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <!--查询所有原始数据，用于启动工程自动校验-->
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from collection_data_source
+  </select>
+</mapper>

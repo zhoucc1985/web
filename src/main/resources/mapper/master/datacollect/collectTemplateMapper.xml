@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.mapper.master.datacollect.CollectTemplateMapper">
+    <resultMap id="BaseResultMap" type="com.cloud.entity.datacollect.CollectTemplate">
+        <id column="template_id" jdbcType="INTEGER" property="templateId"/>
+        <result column="system_name" jdbcType="INTEGER" property="systemName"/>
+        <result column="template_path" jdbcType="VARCHAR" property="templatePath"/>
+        <result column="subsystem_name" jdbcType="VARCHAR" property="subsystemName"/>
+        <result column="template_name" jdbcType="VARCHAR" property="templateName"/>
+        <result column="temp_table_name" jdbcType="VARCHAR" property="tempTableName"/>
+        <result column="real_table_name" jdbcType="VARCHAR" property="realTableName"/>
+        <result column="org_code" jdbcType="VARCHAR" property="orgCode"/>
+        <result column="first_type_code" jdbcType="INTEGER" property="firstTypeCode"/>
+        <result column="second_type_code" jdbcType="INTEGER" property="secondTypeCode"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cloud.entity.datacollect.CollectTemplate">
+        <result column="temp_table_create_sql" jdbcType="LONGVARCHAR" property="tempTableCreateSql"/>
+        <result column="real_table_create_sql" jdbcType="LONGVARCHAR" property="realTableCreateSql"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        template_id, system_name, template_path, subsystem_name, template_name, temp_table_name,
+        real_table_name, org_code, first_type_code, second_type_code
+    </sql>
+    <sql id="Blob_Column_List">
+        temp_table_create_sql, real_table_create_sql
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from collect_template
+        where template_id = #{templateId,jdbcType=INTEGER}
+    </select>
+
+    <!--分页查询对象-->
+    <select id="queryPage" resultType="com.cloud.entity.vo.dataCollect.CollectDetailsVo">
+         SELECT
+        a.template_id AS id,
+        a.template_name AS templateName,
+        a.real_table_name AS tableName,
+        a.system_name AS systemNameCode,
+        a.first_type_code AS firstTypeCode,
+        a.second_type_code AS secondTypeCode,
+        SUM(b.effective_num) AS effectiveNum
+        FROM
+        collect_template a
+        JOIN collect_import_detail b ON a.template_id = b.template_id
+        WHERE b.isImport = 1
+        <if test="tableName != null and tableName !='' ">
+            AND a.temp_table_name LIKE concat('%',#{tableName},'%')
+        </if>
+        <if test="systemName != null">
+            AND a.system_name = #{systemName}
+        </if>
+        <if test="firstTypeCode != null">
+            AND a.first_type_code = #{firstTypeCode}
+        </if>
+        <if test="secondTypeCode != null">
+            AND a.second_type_code = #{secondTypeCode}
+        </if>
+        <if test="orgId != null and orgId != ''">
+            AND (a.org_code = #{orgId} OR a.org_code LIKE CONCAT(#{orgId},'D%'))
+    	</if>
+        GROUP BY
+        a.template_id
+    </select>
+
+
+
+    <!--通过模板id查看详情-->
+    <select id="selectDetailsList" resultType="com.cloud.entity.vo.dataCollect.DetailsListVo">
+        SELECT
+            b.id              AS id,
+            a.temp_table_name AS tableName,
+            b.effective_num   AS effectiveNum,
+            b.load_time       AS loadTime,
+            b.`_batch_id`     AS batchId
+        FROM
+            collect_template a
+            JOIN collect_import_detail b ON a.template_id = b.template_id
+        WHERE
+            b.isImport = 1 AND a.template_id = #{templateId} 
+            AND (b.dept_code = #{orgId} OR b.dept_code LIKE CONCAT(#{orgId},'D%'))
+    </select>
+    
+     <!--通过模板id查看模板路径-->
+    <select id="selectByTemplateId" resultType="com.cloud.entity.datacollect.CollectTemplate">
+        SELECT
+            a.template_path as templatePath
+        FROM
+            collect_template a
+        where 1=1
+        and template_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                ${item}       
+        </foreach>  
+    </select>
+
+    <!--查询导出报告-->
+    <select id="selectAll" resultType="com.cloud.entity.vo.dataCollect.CollectDetailsVo">
+        SELECT
+            a.template_id        AS id,
+            a.temp_table_name    AS tableName,
+            a.system_name        AS systemNameCode,
+            a.first_type_code    AS firstTypeCode,
+            a.second_type_code   AS secondTypeCode,
+            SUM(b.effective_num) AS effectiveNum
+        FROM
+            collect_template a
+            JOIN collect_import_detail b ON a.template_id = b.template_id
+        WHERE b.isImport = 1
+        GROUP BY
+            a.template_id
+    </select>
+
+
+
+
+    <!--查询系统名称-->
+    <select id="selectSystemCode" resultType="java.util.Map">
+        SELECT
+            id,
+            name
+        FROM collect_enum
+        WHERE type = '系统' AND `value` = #{systemNameCode}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        DELETE FROM collect_template
+        WHERE template_id = #{templateId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.cloud.entity.datacollect.CollectTemplate" keyColumn="template_id" keyProperty="templateId" useGeneratedKeys="true">
+        INSERT INTO collect_template (system_name, template_path,
+                                      subsystem_name, template_name, temp_table_name,
+                                      real_table_name, org_code, first_type_code,
+                                      second_type_code, temp_table_create_sql,
+                                      real_table_create_sql)
+        VALUES (#{systemName,jdbcType=INTEGER}, #{templatePath,jdbcType=VARCHAR},
+                                                #{subsystemName,jdbcType=VARCHAR}, #{templateName,jdbcType=VARCHAR},
+                                                #{tempTableName,jdbcType=VARCHAR},
+                                                #{realTableName,jdbcType=VARCHAR}, #{orgCode,jdbcType=VARCHAR},
+                                                #{firstTypeCode,jdbcType=INTEGER},
+                                                #{secondTypeCode,jdbcType=INTEGER},
+                                                #{tempTableCreateSql,jdbcType=LONGVARCHAR},
+                #{realTableCreateSql,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.cloud.entity.datacollect.CollectTemplate">
+        insert into collect_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">
+                template_id,
+            </if>
+            <if test="systemName != null">
+                system_name,
+            </if>
+            <if test="templatePath != null">
+                template_path,
+            </if>
+            <if test="subsystemName != null">
+                subsystem_name,
+            </if>
+            <if test="templateName != null">
+                template_name,
+            </if>
+            <if test="tempTableName != null">
+                temp_table_name,
+            </if>
+            <if test="realTableName != null">
+                real_table_name,
+            </if>
+            <if test="orgCode != null">
+                org_code,
+            </if>
+            <if test="firstTypeCode != null">
+                first_type_code,
+            </if>
+            <if test="secondTypeCode != null">
+                second_type_code,
+            </if>
+            <if test="tempTableCreateSql != null">
+                temp_table_create_sql,
+            </if>
+            <if test="realTableCreateSql != null">
+                real_table_create_sql,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">
+                #{templateId,jdbcType=INTEGER},
+            </if>
+            <if test="systemName != null">
+                #{systemName,jdbcType=INTEGER},
+            </if>
+            <if test="templatePath != null">
+                #{templatePath,jdbcType=VARCHAR},
+            </if>
+            <if test="subsystemName != null">
+                #{subsystemName,jdbcType=VARCHAR},
+            </if>
+            <if test="templateName != null">
+                #{templateName,jdbcType=VARCHAR},
+            </if>
+            <if test="tempTableName != null">
+                #{tempTableName,jdbcType=VARCHAR},
+            </if>
+            <if test="realTableName != null">
+                #{realTableName,jdbcType=VARCHAR},
+            </if>
+            <if test="orgCode != null">
+                #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="firstTypeCode != null">
+                #{firstTypeCode,jdbcType=INTEGER},
+            </if>
+            <if test="secondTypeCode != null">
+                #{secondTypeCode,jdbcType=INTEGER},
+            </if>
+            <if test="tempTableCreateSql != null">
+                #{tempTableCreateSql,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="realTableCreateSql != null">
+                #{realTableCreateSql,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cloud.entity.datacollect.CollectTemplate">
+        update collect_template
+        <set>
+            <if test="systemName != null">
+                system_name = #{systemName,jdbcType=INTEGER},
+            </if>
+            <if test="templatePath != null">
+                template_path = #{templatePath,jdbcType=VARCHAR},
+            </if>
+            <if test="subsystemName != null">
+                subsystem_name = #{subsystemName,jdbcType=VARCHAR},
+            </if>
+            <if test="templateName != null">
+                template_name = #{templateName,jdbcType=VARCHAR},
+            </if>
+            <if test="tempTableName != null">
+                temp_table_name = #{tempTableName,jdbcType=VARCHAR},
+            </if>
+            <if test="realTableName != null">
+                real_table_name = #{realTableName,jdbcType=VARCHAR},
+            </if>
+            <if test="orgCode != null">
+                org_code = #{orgCode,jdbcType=VARCHAR},
+            </if>
+            <if test="firstTypeCode != null">
+                first_type_code = #{firstTypeCode,jdbcType=INTEGER},
+            </if>
+            <if test="secondTypeCode != null">
+                second_type_code = #{secondTypeCode,jdbcType=INTEGER},
+            </if>
+            <if test="tempTableCreateSql != null">
+                temp_table_create_sql = #{tempTableCreateSql,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="realTableCreateSql != null">
+                real_table_create_sql = #{realTableCreateSql,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where template_id = #{templateId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cloud.entity.datacollect.CollectTemplate">
+        UPDATE collect_template
+        SET system_name           = #{systemName,jdbcType=INTEGER},
+            template_path         = #{templatePath,jdbcType=VARCHAR},
+            subsystem_name        = #{subsystemName,jdbcType=VARCHAR},
+            template_name         = #{templateName,jdbcType=VARCHAR},
+            temp_table_name       = #{tempTableName,jdbcType=VARCHAR},
+            real_table_name       = #{realTableName,jdbcType=VARCHAR},
+            org_code              = #{orgCode,jdbcType=VARCHAR},
+            first_type_code       = #{firstTypeCode,jdbcType=INTEGER},
+            second_type_code      = #{secondTypeCode,jdbcType=INTEGER},
+            temp_table_create_sql = #{tempTableCreateSql,jdbcType=LONGVARCHAR},
+            real_table_create_sql = #{realTableCreateSql,jdbcType=LONGVARCHAR}
+        WHERE template_id = #{templateId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cloud.entity.datacollect.CollectTemplate">
+        UPDATE collect_template
+        SET system_name      = #{systemName,jdbcType=INTEGER},
+            template_path    = #{templatePath,jdbcType=VARCHAR},
+            subsystem_name   = #{subsystemName,jdbcType=VARCHAR},
+            template_name    = #{templateName,jdbcType=VARCHAR},
+            temp_table_name  = #{tempTableName,jdbcType=VARCHAR},
+            real_table_name  = #{realTableName,jdbcType=VARCHAR},
+            org_code         = #{orgCode,jdbcType=VARCHAR},
+            first_type_code  = #{firstTypeCode,jdbcType=INTEGER},
+            second_type_code = #{secondTypeCode,jdbcType=INTEGER}
+        WHERE template_id = #{templateId,jdbcType=INTEGER}
+    </update>
+    <select id="findisImport" resultType="java.lang.String">
+        SELECT isImport
+        FROM collect_import_detail
+        WHERE _batch_id = ${batchId}
+    </select>
+
+    <select id="findAllRealTableName" resultType="com.cloud.entity.datacollect.CollectTemplate">
+		SELECT DISTINCT
+		real_table_name as realTableName,template_id AS templateId
+		FROM
+		collect_template WHERE real_table_name is NOT NULL
+	</select>
+
+</mapper>

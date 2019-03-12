@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>websocket</title>
+    <script src="//cdn.bootcss.com/angular.js/1.5.6/angular.min.js"></script>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.0.0/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+        function connect(){
+            var socket = new SockJS('/my-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                // 注册发送消息
+                stompClient.subscribe('/topic/send', function(msg) {
+                    console.log("------------------------w"+msg)
+                    debugger;
+                });
+                // 注册推送时间回调
+                stompClient.subscribe('/user/marker/callback', function(r) {
+                    console.log("------------------------q")
+                    debugger;
+                    $("#msg").val("----"+ r.body);
+                    var datas = JSON.parse(r.body);
+                        if(datas.datas.offConnection){
+                            disconnect();
+                        }
+                });
+            },function errorCallBack (error) {
+                // 连接失败时（服务器响应 ERROR 帧）的回调方法
+                document.getElementById("msg").innerHTML = "连接失败";
+                console.log('连接失败【' + error + '】');
+            });
+            doUpload();
+        }
+        function disconnect(){
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+        }
+        function doUpload(){
+            var formData = new FormData($("#uploadForm")[0]);
+            //formData.append("batchId","4");
+            $.ajax({
+                url: 'http://192.168.6.160:8080/api/data-collection/import/10',
+                type: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(returndata) {
+                    var vData = JSON.stringify(returndata);
+                    alert(vData);
+                },
+                error: function(returndata) {
+                    var vData = JSON.stringify(returndata);
+                    alert(vData);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div>
+    <button type="button"  onclick="connect()">upload</button>
+    <form id="uploadForm">
+        <p>filename
+            <input type="text" name="filename" value="" />
+        </p>
+        <p>uploadFileName
+            <input type="file" name="file" />
+        </p>
+    </form>
+    reposeMsg
+    <input id="msg">
+</div>
+</body>
+</html>
